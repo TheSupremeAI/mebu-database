@@ -6,36 +6,36 @@ import plotly.graph_objects as go
 
 # ── Palette (mirrors CSS design tokens) ───────────────────────────────────────
 PALETTE = [
-    "#00F5D4",  # plasma teal   (primary)
-    "#FFB800",  # molten gold
-    "#7B61FF",  # violet
-    "#FF6B6B",  # coral
-    "#00D4FF",  # electric blue
-    "#FF9F43",  # amber
-    "#00F5A0",  # mint green
-    "#C8A2C8",  # lilac
+    "#C9901A",  # molten gold      (primary)
+    "#E8E4D9",  # platinum
+    "#D4793A",  # burnt amber
+    "#A87848",  # raw sienna
+    "#7A9AAA",  # steel blue-grey
+    "#C8A878",  # sand
+    "#8A7060",  # dark umber
+    "#E8C860",  # pale gold
 ]
 
-PAPER_BG   = "#04060D"
-PLOT_BG    = "#080D1A"
-GRID_COLOR = "rgba(0,245,212,0.05)"
-ZERO_LINE  = "rgba(0,245,212,0.12)"
+PAPER_BG   = "#06050A"
+PLOT_BG    = "#0C0A12"
+GRID_COLOR = "rgba(201,144,26,0.06)"
+ZERO_LINE  = "rgba(201,144,26,0.14)"
 
 BASE_LAYOUT = dict(
     paper_bgcolor=PAPER_BG,
     plot_bgcolor=PLOT_BG,
     font=dict(
-        color="#6A8CAA",
-        family="'JetBrains Mono', monospace",
+        color="#7A7060",
+        family="'IBM Plex Mono', monospace",
         size=11,
     ),
     xaxis=dict(
         gridcolor=GRID_COLOR,
         zerolinecolor=ZERO_LINE,
         zerolinewidth=1,
-        tickfont=dict(size=10, color="#3D5A78", family="'JetBrains Mono', monospace"),
-        title_font=dict(size=11, color="#4A6A8A", family="'Rajdhani', sans-serif"),
-        linecolor="rgba(0,245,212,0.08)",
+        tickfont=dict(size=10, color="#5A4A38", family="'IBM Plex Mono', monospace"),
+        title_font=dict(size=11, color="#7A6A50", family="'Rajdhani', sans-serif"),
+        linecolor="rgba(201,144,26,0.1)",
         linewidth=1,
         showgrid=True,
     ),
@@ -43,26 +43,26 @@ BASE_LAYOUT = dict(
         gridcolor=GRID_COLOR,
         zerolinecolor=ZERO_LINE,
         zerolinewidth=1,
-        tickfont=dict(size=10, color="#3D5A78", family="'JetBrains Mono', monospace"),
-        title_font=dict(size=11, color="#4A6A8A", family="'Rajdhani', sans-serif"),
-        linecolor="rgba(0,245,212,0.08)",
+        tickfont=dict(size=10, color="#5A4A38", family="'IBM Plex Mono', monospace"),
+        title_font=dict(size=11, color="#7A6A50", family="'Rajdhani', sans-serif"),
+        linecolor="rgba(201,144,26,0.1)",
         linewidth=1,
         showgrid=True,
     ),
     legend=dict(
-        bgcolor="rgba(8,13,26,0.85)",
-        bordercolor="rgba(0,245,212,0.15)",
+        bgcolor="rgba(6,5,10,0.88)",
+        bordercolor="rgba(201,144,26,0.2)",
         borderwidth=1,
-        font=dict(size=10, color="#6A8CAA", family="'JetBrains Mono', monospace"),
+        font=dict(size=10, color="#7A7060", family="'IBM Plex Mono', monospace"),
         orientation="h",
         yanchor="bottom", y=1.02,
         xanchor="right", x=1,
     ),
     hovermode="x unified",
     hoverlabel=dict(
-        bgcolor="#0B1422",
-        bordercolor="rgba(0,245,212,0.4)",
-        font=dict(color="#C8DCF0", size=11, family="'JetBrains Mono', monospace"),
+        bgcolor="#100E18",
+        bordercolor="rgba(201,144,26,0.45)",
+        font=dict(color="#C8C0B0", size=11, family="'IBM Plex Mono', monospace"),
     ),
     margin=dict(l=54, r=20, t=52, b=44),
 )
@@ -74,7 +74,7 @@ def _base_fig(title="", y_title="", x_title="DAY ON STREAM"):
     layout["title"] = dict(
         text=title.upper(),
         font=dict(
-            size=12, color="#4A7A8A",
+            size=12, color="#7A6A50",
             family="'Rajdhani', sans-serif",
         ),
         x=0.01, y=0.97,
@@ -86,7 +86,7 @@ def _base_fig(title="", y_title="", x_title="DAY ON STREAM"):
 
 
 def _add_art_band(fig, art_low, art_high, n_days=28):
-    """Shaded ART acceptance band — teal fill, dotted border."""
+    """Shaded ART acceptance band — gold fill, dotted border."""
     if art_low is None or art_high is None:
         return
     days = list(range(0, n_days + 3))
@@ -95,8 +95,8 @@ def _add_art_band(fig, art_low, art_high, n_days=28):
         x=days + days[::-1],
         y=[art_high] * len(days) + [art_low] * len(days),
         fill="toself",
-        fillcolor="rgba(0,245,212,0.06)",
-        line=dict(color="rgba(0,245,212,0.25)", width=1, dash="dot"),
+        fillcolor="rgba(201,144,26,0.05)",
+        line=dict(color="rgba(201,144,26,0.22)", width=1, dash="dot"),
         name="ART ACCEPTANCE",
         hoverinfo="skip",
         showlegend=True,
@@ -106,7 +106,7 @@ def _add_art_band(fig, art_low, art_high, n_days=28):
         x=days,
         y=[art_high] * len(days),
         mode="lines",
-        line=dict(color="rgba(0,245,212,0.18)", width=1, dash="dot"),
+        line=dict(color="rgba(201,144,26,0.18)", width=1, dash="dot"),
         showlegend=False,
         hoverinfo="skip",
     ))
@@ -115,7 +115,7 @@ def _add_art_band(fig, art_low, art_high, n_days=28):
         x=days,
         y=[art_low] * len(days),
         mode="lines",
-        line=dict(color="rgba(0,245,212,0.18)", width=1, dash="dot"),
+        line=dict(color="rgba(201,144,26,0.18)", width=1, dash="dot"),
         showlegend=False,
         hoverinfo="skip",
     ))
@@ -200,9 +200,9 @@ def vr_blend_donut(vr_blend):
             line=dict(color=PAPER_BG, width=3),
         ),
         textfont=dict(
-            color="#C8DCF0",
+            color="#C8C0B0",
             size=10,
-            family="'JetBrains Mono', monospace",
+            family="'IBM Plex Mono', monospace",
         ),
         textposition="outside",
         texttemplate="%{label}<br><b>%{percent}</b>",
@@ -212,14 +212,14 @@ def vr_blend_donut(vr_blend):
     fig.update_layout(
         paper_bgcolor=PAPER_BG,
         plot_bgcolor=PAPER_BG,
-        font=dict(color="#C8DCF0", family="'JetBrains Mono', monospace"),
+        font=dict(color="#C8C0B0", family="'IBM Plex Mono', monospace"),
         showlegend=False,
         margin=dict(l=20, r=20, t=28, b=20),
         annotations=[dict(
             text="<b>VR<br>BLEND</b>",
             x=0.5, y=0.5,
             font=dict(
-                size=12, color="#00F5D4",
+                size=12, color="#C9901A",
                 family="'Rajdhani', sans-serif",
             ),
             showarrow=False,

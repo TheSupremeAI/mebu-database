@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from utils.db import init_db, get_all_experiments, get_measurements, get_experiment
 from utils.charts import line_chart
-from utils.styles import inject_css, page_header
+from utils.styles import inject_css, page_header, section_label
 
 init_db()
 inject_css()
@@ -96,12 +96,12 @@ def product_table(category):
 tabs = st.tabs(["HPS Results", "LTO Results", "ISV Results", "Gas Composition"])
 
 with tabs[0]:
-    st.markdown("### HPS Daily Properties")
+    st.markdown(section_label("HPS Daily Properties"), unsafe_allow_html=True)
     product_table("HPS Product")
     c1, c2 = st.columns(2)
     with c1:
         product_chart("HPS API (ASTM D4052)", "API", [("HPS_API", "API")], color="#FFB800")
-        product_chart("HPS Sulfur (ASTM D4294)", "wt%", [("HPS_Sulfur", "Sulfur (wt%)")], color="#00F5D4")
+        product_chart("HPS Sulfur (ASTM D4294)", "wt%", [("HPS_Sulfur", "Sulfur (wt%)")], color="#C9901A")
         product_chart("HPS CCR (ASTM D4530)", "wt%", [("HPS_CCR", "CCR (wt%)")], color="#C8A2C8")
     with c2:
         product_chart("HPS Density (ASTM D4052)", "g/cm³", [("HPS_Density", "Density")], color="#FF6B6B")
@@ -109,22 +109,22 @@ with tabs[0]:
         product_chart("HPS Sediment (ASTM D4870)", "wt%", [("HPS_Sediment", "Total Sediment (wt%)")], color="#FF9F43")
 
 with tabs[1]:
-    st.markdown("### LTO Daily Properties")
+    st.markdown(section_label("LTO Daily Properties"), unsafe_allow_html=True)
     product_table("LTO Product")
     c1, c2 = st.columns(2)
     with c1:
         product_chart("LTO API (ASTM D4052)", "API", [("LTO_API", "API")], color="#FFB800")
-        product_chart("LTO Sulfur (ASTM D4294)", "wt%", [("LTO_Sulfur", "Sulfur (wt%)")], color="#00F5D4")
+        product_chart("LTO Sulfur (ASTM D4294)", "wt%", [("LTO_Sulfur", "Sulfur (wt%)")], color="#C9901A")
     with c2:
         product_chart("LTO Density (ASTM D4052)", "g/cm³", [("LTO_Density", "Density")], color="#FF6B6B")
         product_chart("LTO Nitrogen (ASTM D5762)", "ppmw", [("LTO_Nitrogen", "Nitrogen (ppmw)")], color="#7B61FF")
 
 with tabs[2]:
-    st.markdown("### ISV Daily Properties")
+    st.markdown(section_label("ISV Daily Properties"), unsafe_allow_html=True)
     product_table("ISV Product")
     c1, c2 = st.columns(2)
     with c1:
-        product_chart("ISV Sulfur (ASTM D4294)", "wt%", [("ISV_Sulfur", "Sulfur (wt%)")], color="#00F5D4")
+        product_chart("ISV Sulfur (ASTM D4294)", "wt%", [("ISV_Sulfur", "Sulfur (wt%)")], color="#C9901A")
         product_chart("ISV Metals (Ni, V)", "ppm", [("ISV_Ni", "Ni (ppm)"), ("ISV_V", "V (ppm)")])
     with c2:
         product_chart("ISV 560+", "wt%", [("ISV_560plus", "560+ (wt%)")], color="#FFB800")
@@ -139,18 +139,18 @@ with tabs[2]:
 
 
 with tabs[3]:
-    st.markdown("### Gas Composition (mol%)")
+    st.markdown(section_label("Gas Composition"), unsafe_allow_html=True)
     col_hg, col_lg = st.columns(2)
     with col_hg:
-        st.markdown("#### High Gas")
+        st.markdown(section_label("High Gas"), unsafe_allow_html=True)
         product_table("High Gas")
-        product_chart("High Gas H2 (ASTM D7833)", "mol%", [("HG_H2", "H2")], color="#00F5D4")
+        product_chart("High Gas H2 (ASTM D7833)", "mol%", [("HG_H2", "H2")], color="#C9901A")
         product_chart("High Gas C1-C3 (ASTM D7833)", "mol%", [("HG_C1", "C1"), ("HG_C2", "C2"), ("HG_C3", "C3")])
         product_chart("High Gas C4-C6+ & N2 (ASTM D7833)", "mol%", [("HG_C4", "C4"), ("HG_C5", "C5"), ("HG_C6plus", "C6+"), ("HG_N2", "N2")])
     with col_lg:
-        st.markdown("#### Low Gas")
+        st.markdown(section_label("Low Gas"), unsafe_allow_html=True)
         product_table("Low Gas")
-        product_chart("Low Gas H2 (ASTM D7833)", "mol%", [("LG_H2", "H2")], color="#00F5D4")
+        product_chart("Low Gas H2 (ASTM D7833)", "mol%", [("LG_H2", "H2")], color="#C9901A")
         product_chart("Low Gas C1-C3 (ASTM D7833)", "mol%", [("LG_C1", "C1"), ("LG_C2", "C2"), ("LG_C3", "C3")])
         product_chart("Low Gas C4-C6+ & N2 (ASTM D7833)", "mol%", [("LG_C4", "C4"), ("LG_C5", "C5"), ("LG_C6plus", "C6+"), ("LG_N2", "N2")])
 

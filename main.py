@@ -34,29 +34,29 @@ col1, col2, col3, col4 = st.columns(4)
 col1.metric("Experiments Loaded", len(experiments))
 col2.metric("Total Measurements", f"{total_measurements:,}")
 col3.metric("Database", "SQLite")
-col4.metric("Platform Version", "v1.0")
+col4.metric("Platform Version", "v1.1")
 
 st.markdown("<br>", unsafe_allow_html=True)
 
 st.markdown("""
 <div style="
   background:linear-gradient(135deg,var(--surface) 0%,var(--surface-2) 100%);
-  border:1px solid var(--border);border-top:2px solid var(--plasma);
+  border:1px solid var(--border);border-top:2px solid var(--gold);
   border-radius:var(--radius);padding:32px 40px;
   max-width:760px;margin:0 auto;
   box-shadow:0 8px 32px rgba(0,0,0,0.4);
   position:relative;overflow:hidden;">
   <div style="position:absolute;top:0;right:0;width:200px;height:200px;
-    background:radial-gradient(circle at top right,rgba(0,245,212,0.06),transparent 70%);
+    background:radial-gradient(circle at top right,rgba(201,144,26,0.06),transparent 70%);
     pointer-events:none;"></div>
   <div style="font-family:var(--font-display);font-size:0.72rem;font-weight:700;
-    letter-spacing:3px;text-transform:uppercase;color:var(--plasma);margin-bottom:22px;">
+    letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:22px;">
     ◈ QUICK START GUIDE
   </div>
   <div style="display:grid;gap:20px;">
     <div style="display:flex;align-items:flex-start;gap:16px;">
-      <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--plasma);
-        background:var(--plasma-faint);border:1px solid var(--border-2);
+      <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--gold);
+        background:var(--gold-dim);border:1px solid var(--gold-border);
         border-radius:3px;padding:3px 8px;min-width:28px;text-align:center;margin-top:2px;">01</span>
       <div>
         <div style="font-family:var(--font-display);font-weight:600;font-size:0.95rem;
@@ -79,8 +79,8 @@ st.markdown("""
       </div>
     </div>
     <div style="display:flex;align-items:flex-start;gap:16px;">
-      <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--violet);
-        background:rgba(123,97,255,0.08);border:1px solid rgba(123,97,255,0.2);
+      <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-2);
+        background:rgba(122,112,96,0.1);border:1px solid rgba(122,112,96,0.2);
         border-radius:3px;padding:3px 8px;min-width:28px;text-align:center;margin-top:2px;">03</span>
       <div>
         <div style="font-family:var(--font-display);font-weight:600;font-size:0.95rem;
