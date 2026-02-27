@@ -21,6 +21,11 @@ Open browser at `http://localhost:8501`
 
 ## Version History
 
+### v1.1.1 Hotfix — 2026-02-27
+**Streamlit Cloud Deployment Fixes**
+- **BOM Removal**: Stripped invisible UTF-8 BOM characters from `.streamlit/config.toml` to prevent `TomlDecodeError` during cloud server spin-ups.
+- **Entry Point Reset**: Reverted application entry point back to strict lowercase `main.py` to satisfy Streamlit Cloud's default expectations.
+
 ### v1.1.0 UI — 2026-02-27 (Current)
 **Focused Storyteller luxury design**
 
