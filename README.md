@@ -21,15 +21,14 @@ Open browser at `http://localhost:8501`
 
 ## Version History
 
-### v1.1.0 UI â€” 2026-02-27 (Current)
-**Petroleum Luxury Design System**
+### v1.1.0 UI — 2026-02-27 (Current)
+**Focused Storyteller luxury design**
 
-- **New design identity**: Replaced Deep Field teal (`#00F5D4`) with Obsidian + Molten Gold (`#C9901A`) palette
-- **New fonts**: Playfair Display (italic serif headers with gold shimmer animation) + IBM Plex Mono (data/mono)
-- **Full-app coverage**: `styles.py`, `charts.py`, and all 5 page files updated — zero teal tokens remain
-- **Chart palette**: Gold/amber/platinum tones replace teal/violet/coral across all Plotly charts
-- **UI polish**: Gold left-border metric cards, gold tab underlines, gold button glow, noise texture background
-- **Contrast fix**: Raised all text color stops for legibility — `--text` → `#DDD8CE`, `--text-2` → `#A89C8C`, `--text-3` → `#706050`, `--platinum` → `#F0EDE6`; chart tick/axis/legend fonts brightened to match
+- **New design identity**: Pure matte black (`#0E1117`) background with sharp `1px` high-contrast gold (`#C9901A`) borders.
+- **Top Summary Ribbons**: Added high-level KPI ribbons using `st.columns` & `st.metric` cards to `Dashboard` and `Product Results` pages for immediate data insights.
+- **Redesigned Quick Start**: Consolidated the monolithic gradient block into sleek, functional horizontal metric cards.
+- **Chart refinement**: Stripped out grid lines and made Plotly chart backgrounds completely transparent. Brightened the trace palette with stark, neon colors (Molten Gold, Neon Pink, Cyan) for maximum readability against pure black.
+- **Removed gradient noise**: Cleaned up the background CSS, eliminating the intrusive gold radial gradients for a stricter, professional data-dense look.
 
 ### v1.1.0 â€” 2026-02-27
 **Header-Aware Mapping & Streamlined UI**
