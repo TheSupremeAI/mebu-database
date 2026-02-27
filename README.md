@@ -29,6 +29,8 @@ Open browser at `http://localhost:8501`
 - **Phase Bands on Charts**: When 2+ phases exist, colored vertical bands with neon labels appear on all Dashboard and Product Results charts showing feed boundaries.
 - **Phase Summary Panel**: Dashboard now shows a phase card panel instead of the old VR blend donut.
 - **CSV Export**: New export function in Settings — download phase data (VR names, compositions, temperatures) as CSV with preview table.
+- **Auto-Push to GitHub**: Save button in Settings auto-commits and pushes database changes to GitHub.
+- **Improved Database Status Table**: Import page table now shows VR feeds, phase count, and per-phase temperatures; sorted by experiment name with sequential numbering.
 - **Chart Readability**: Larger chart titles (15px), brighter axis values, full-opacity neon phase labels.
 - **Auto-Migration**: Existing experiments automatically converted to single-phase format on first run.
 
