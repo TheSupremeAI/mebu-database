@@ -10,24 +10,24 @@ MEBU_CSS = """
 :root {
   --void:          #05050A;
   --abyss:         #0A0A0F;
-  --surface:       rgba(14,12,20,0.88);
-  --surface-2:     rgba(22,18,32,0.92);
-  --surface-3:     rgba(30,26,44,0.95);
+  --surface:       #0E1117;
+  --surface-2:     #131722;
+  --surface-3:     #1B202F;
   --gold:          #C9901A;
   --gold-bright:   #E8A82A;
   --gold-dim:      rgba(201,144,26,0.12);
   --gold-glow:     rgba(201,144,26,0.35);
-  --gold-border:   rgba(201,144,26,0.22);
+  --gold-border:   rgba(201,144,26,0.3);
   --gold-border-b: rgba(201,144,26,0.50);
   --platinum:      #F0EDE6;
   --text:          #DDD8CE;
   --text-2:        #A89C8C;
   --text-3:        #706050;
-  --border:        rgba(201,144,26,0.18);
+  --border:        rgba(201,144,26,0.3);
   --font-display:  'Playfair Display', serif;
   --font-ui:       'Rajdhani', sans-serif;
   --font-mono:     'IBM Plex Mono', monospace;
-  --radius:        10px;
+  --radius:        2px;
 }
 
 /* ── Reset & Base ─────────────────────────────────────────────────────── */
@@ -37,14 +37,13 @@ html, body, [class*="css"], .stApp {
   color: var(--text) !important;
 }
 
-/* ── Background: obsidian + noise + gold radial + dot grid ─────────────── */
+/* ── Background: obsidian + noise + dot grid ─────────────── */
 .stApp {
   background-color: var(--void) !important;
   background-image:
     url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"),
-    radial-gradient(ellipse 70% 45% at 50% 0%, rgba(201,144,26,0.07) 0%, transparent 65%),
     radial-gradient(circle 2px at center, rgba(201,144,26,0.04) 0%, transparent 100%);
-  background-size: 200px 200px, 100% 100%, 38px 38px !important;
+  background-size: 200px 200px, 38px 38px !important;
   background-attachment: fixed !important;
 }
 
@@ -90,12 +89,10 @@ html, body, [class*="css"], .stApp {
 /* ── Metric cards ───────────────────────────────────────────────────────── */
 [data-testid="stMetric"] {
   background: var(--surface) !important;
-  backdrop-filter: blur(16px) !important;
   border: 1px solid var(--gold-border) !important;
-  border-left: 3px solid var(--gold) !important;
   border-radius: var(--radius) !important;
-  padding: 22px 24px !important;
-  box-shadow: 0 4px 28px rgba(0,0,0,0.45), inset 0 1px 0 rgba(201,144,26,0.08) !important;
+  padding: 16px 20px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.45) !important;
   transition: all 0.35s cubic-bezier(0.16,1,0.3,1) !important;
   animation: cardReveal 0.7s cubic-bezier(0.16,1,0.3,1) both;
 }
