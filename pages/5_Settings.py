@@ -305,6 +305,69 @@ if st.session_state[phase_sess_key]:
             </div>
             """, unsafe_allow_html=True)
 
+# ── Export Experiment Data ─────────────────────────────────────────────────────
+st.markdown("<br>", unsafe_allow_html=True)
+st.markdown(section_label("📤 Export Experiment Data"), unsafe_allow_html=True)
+
+with st.expander("Export phases, VR feeds, and temperatures to CSV", expanded=False):
+    import io
+    import csv
+
+    export_phases = get_phases(exp_id)
+    if export_phases:
+        # Build CSV in memory
+        buffer = io.StringIO()
+        writer = csv.writer(buffer)
+        writer.writerow([
+            "Experiment", "Phase Name", "From Day", "To Day",
+            "VR Feed Name", "VR Composition",
+            "Rx-1 (°C)", "Rx-2 (°C)", "Rx-3 (°C)"
+        ])
+        for p in export_phases:
+            comp = json.loads(p.get("composition") or "[]")
+            comp_str = " | ".join(f"{c['name']} {c['pct']:.0f}%" for c in comp) if comp else ""
+            writer.writerow([
+                selected_name,
+                p.get("phase_name") or "",
+                p.get("from_day", ""),
+                p.get("to_day", ""),
+                p.get("feed_name") or "",
+                comp_str,
+                p.get("rx1_temp") or "",
+                p.get("rx2_temp") or "",
+                p.get("rx3_temp") or "",
+            ])
+
+        csv_data = buffer.getvalue()
+        safe_name = selected_name.replace("'", "").replace('"', '').replace("/", "_")
+        st.download_button(
+            label="⬇️ Download Phase Data (CSV)",
+            data=csv_data,
+            file_name=f"{safe_name}_phases.csv",
+            mime="text/csv",
+            key=f"export_phases_{exp_id}",
+        )
+
+        # Preview
+        st.markdown("**Preview:**")
+        preview_data = []
+        for p in export_phases:
+            comp = json.loads(p.get("composition") or "[]")
+            comp_str = " | ".join(f"{c['name']} {c['pct']:.0f}%" for c in comp) if comp else "—"
+            preview_data.append({
+                "Phase": p.get("phase_name") or "—",
+                "Days": f"{p.get('from_day', '?')}–{p.get('to_day', '?')}",
+                "VR Feed": p.get("feed_name") or "—",
+                "Composition": comp_str,
+                "Rx-1": f"{p.get('rx1_temp', 0):.0f}°" if p.get('rx1_temp') else "—",
+                "Rx-2": f"{p.get('rx2_temp', 0):.0f}°" if p.get('rx2_temp') else "—",
+                "Rx-3": f"{p.get('rx3_temp', 0):.0f}°" if p.get('rx3_temp') else "—",
+            })
+        import pandas as pd
+        st.dataframe(pd.DataFrame(preview_data), use_container_width=True, hide_index=True)
+    else:
+        st.info("No phases to export. Add phases above first.")
+
 
 # ── Danger zone ────────────────────────────────────────────────────────────────
 st.markdown("<br><hr>", unsafe_allow_html=True)

@@ -33,8 +33,8 @@ BASE_LAYOUT = dict(
         gridcolor=GRID_COLOR,
         zerolinecolor=ZERO_LINE,
         zerolinewidth=1,
-        tickfont=dict(size=10, color="#8A7C6C", family="'IBM Plex Mono', monospace"),
-        title_font=dict(size=11, color="#A89C8C", family="'Rajdhani', sans-serif"),
+        tickfont=dict(size=11, color="#C8B8A8", family="'IBM Plex Mono', monospace"),
+        title_font=dict(size=12, color="#D0C4B4", family="'Rajdhani', sans-serif"),
         linecolor="rgba(201,144,26,0.1)",
         linewidth=1,
         showgrid=False,
@@ -43,8 +43,8 @@ BASE_LAYOUT = dict(
         gridcolor=GRID_COLOR,
         zerolinecolor=ZERO_LINE,
         zerolinewidth=1,
-        tickfont=dict(size=10, color="#8A7C6C", family="'IBM Plex Mono', monospace"),
-        title_font=dict(size=11, color="#A89C8C", family="'Rajdhani', sans-serif"),
+        tickfont=dict(size=11, color="#C8B8A8", family="'IBM Plex Mono', monospace"),
+        title_font=dict(size=12, color="#D0C4B4", family="'Rajdhani', sans-serif"),
         linecolor="rgba(201,144,26,0.1)",
         linewidth=1,
         showgrid=False,
@@ -74,7 +74,7 @@ def _base_fig(title="", y_title="", x_title="DAY ON STREAM"):
     layout["title"] = dict(
         text=title.upper(),
         font=dict(
-            size=12, color="#A89C8C",
+            size=15, color="#E8DDD0",
             family="'Rajdhani', sans-serif",
         ),
         x=0.01, y=0.97,
@@ -141,12 +141,12 @@ PHASE_BORDER_COLORS = [
 ]
 
 PHASE_TEXT_COLORS = [
-    "rgba(201,144,26,0.7)",
-    "rgba(0,212,255,0.7)",
-    "rgba(123,97,255,0.7)",
-    "rgba(255,107,107,0.7)",
-    "rgba(0,245,160,0.7)",
-    "rgba(255,159,67,0.7)",
+    "rgba(255,200,50,1.0)",
+    "rgba(0,230,255,1.0)",
+    "rgba(160,130,255,1.0)",
+    "rgba(255,130,130,1.0)",
+    "rgba(0,255,180,1.0)",
+    "rgba(255,180,90,1.0)",
 ]
 
 
@@ -174,9 +174,9 @@ def add_phase_bands(fig, phases):
             yref="paper",
             text=f"<b>{feed_label}</b>",
             showarrow=False,
-            font=dict(size=9, color=text_color,
+            font=dict(size=12, color=text_color,
                       family="'Rajdhani', sans-serif"),
-            yshift=10,
+            yshift=12,
         )
 
 
