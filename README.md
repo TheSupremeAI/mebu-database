@@ -1,8 +1,8 @@
 ﻿# MEBU Analytics Platform
 
-**Version:** 1.1.0
+**Version:** 1.2.0
 **Last Updated:** 2026-02-27
-**Status:** âœ… Production-ready â€” System re-mapped to HPS/Product properties
+**Status:** ✅ Production-ready — Multi-phase VR Feed tracking + HPS/Product mapping
 **GitHub Repository:** [TheSupremeAI/mebu-database](https://github.com/TheSupremeAI/mebu-database)
 **Developer:** [TheSupremeAI](https://github.com/TheSupremeAI)
 
@@ -21,12 +21,23 @@ Open browser at `http://localhost:8501`
 
 ## Version History
 
+### v1.2.0 — 2026-02-27 (Current)
+**Multi-Phase VR Feed Tracking**
+
+- **VR Feed Library**: New reusable feed recipe catalog — define named blends (e.g., ABQ3358 = Basrah Heavy 55% + Arab Medium 10% + Arab Light 35%) and reuse across experiments.
+- **Phase Timeline Editor**: Each experiment can now have multiple phases with independent day ranges, VR feeds, and reactor temperatures (Rx-1/Rx-2/Rx-3). Replaces the old single VR blend + temperature editor.
+- **Phase Bands on Charts**: When 2+ phases exist, colored vertical bands with neon labels appear on all Dashboard and Product Results charts showing feed boundaries.
+- **Phase Summary Panel**: Dashboard now shows a phase card panel instead of the old VR blend donut.
+- **CSV Export**: New export function in Settings — download phase data (VR names, compositions, temperatures) as CSV with preview table.
+- **Chart Readability**: Larger chart titles (15px), brighter axis values, full-opacity neon phase labels.
+- **Auto-Migration**: Existing experiments automatically converted to single-phase format on first run.
+
 ### v1.1.1 Hotfix — 2026-02-27
 **Streamlit Cloud Deployment Fixes**
 - **BOM Removal**: Stripped invisible UTF-8 BOM characters from `.streamlit/config.toml` to prevent `TomlDecodeError` during cloud server spin-ups.
 - **Entry Point Reset**: Reverted application entry point back to strict lowercase `main.py` to satisfy Streamlit Cloud's default expectations.
 
-### v1.1.0 UI — 2026-02-27 (Current)
+### v1.1.0 UI — 2026-02-27
 **Focused Storyteller luxury design**
 
 - **New design identity**: Pure matte black (`#0E1117`) background with sharp `1px` high-contrast gold (`#C9901A`) borders.
