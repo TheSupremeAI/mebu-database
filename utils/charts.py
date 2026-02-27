@@ -25,7 +25,7 @@ BASE_LAYOUT = dict(
     paper_bgcolor=PAPER_BG,
     plot_bgcolor=PLOT_BG,
     font=dict(
-        color="#7A7060",
+        color="#A89C8C",
         family="'IBM Plex Mono', monospace",
         size=11,
     ),
@@ -33,8 +33,8 @@ BASE_LAYOUT = dict(
         gridcolor=GRID_COLOR,
         zerolinecolor=ZERO_LINE,
         zerolinewidth=1,
-        tickfont=dict(size=10, color="#5A4A38", family="'IBM Plex Mono', monospace"),
-        title_font=dict(size=11, color="#7A6A50", family="'Rajdhani', sans-serif"),
+        tickfont=dict(size=10, color="#8A7C6C", family="'IBM Plex Mono', monospace"),
+        title_font=dict(size=11, color="#A89C8C", family="'Rajdhani', sans-serif"),
         linecolor="rgba(201,144,26,0.1)",
         linewidth=1,
         showgrid=True,
@@ -43,8 +43,8 @@ BASE_LAYOUT = dict(
         gridcolor=GRID_COLOR,
         zerolinecolor=ZERO_LINE,
         zerolinewidth=1,
-        tickfont=dict(size=10, color="#5A4A38", family="'IBM Plex Mono', monospace"),
-        title_font=dict(size=11, color="#7A6A50", family="'Rajdhani', sans-serif"),
+        tickfont=dict(size=10, color="#8A7C6C", family="'IBM Plex Mono', monospace"),
+        title_font=dict(size=11, color="#A89C8C", family="'Rajdhani', sans-serif"),
         linecolor="rgba(201,144,26,0.1)",
         linewidth=1,
         showgrid=True,
@@ -53,7 +53,7 @@ BASE_LAYOUT = dict(
         bgcolor="rgba(6,5,10,0.88)",
         bordercolor="rgba(201,144,26,0.2)",
         borderwidth=1,
-        font=dict(size=10, color="#7A7060", family="'IBM Plex Mono', monospace"),
+        font=dict(size=10, color="#A89C8C", family="'IBM Plex Mono', monospace"),
         orientation="h",
         yanchor="bottom", y=1.02,
         xanchor="right", x=1,
@@ -62,7 +62,7 @@ BASE_LAYOUT = dict(
     hoverlabel=dict(
         bgcolor="#100E18",
         bordercolor="rgba(201,144,26,0.45)",
-        font=dict(color="#C8C0B0", size=11, family="'IBM Plex Mono', monospace"),
+        font=dict(color="#DDD8CE", size=11, family="'IBM Plex Mono', monospace"),
     ),
     margin=dict(l=54, r=20, t=52, b=44),
 )
@@ -74,7 +74,7 @@ def _base_fig(title="", y_title="", x_title="DAY ON STREAM"):
     layout["title"] = dict(
         text=title.upper(),
         font=dict(
-            size=12, color="#7A6A50",
+            size=12, color="#A89C8C",
             family="'Rajdhani', sans-serif",
         ),
         x=0.01, y=0.97,

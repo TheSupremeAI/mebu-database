@@ -19,10 +19,10 @@ MEBU_CSS = """
   --gold-glow:     rgba(201,144,26,0.35);
   --gold-border:   rgba(201,144,26,0.22);
   --gold-border-b: rgba(201,144,26,0.50);
-  --platinum:      #E8E4D9;
-  --text:          #C8C0B0;
-  --text-2:        #7A7060;
-  --text-3:        #4A4438;
+  --platinum:      #F0EDE6;
+  --text:          #DDD8CE;
+  --text-2:        #A89C8C;
+  --text-3:        #706050;
   --border:        rgba(201,144,26,0.18);
   --font-display:  'Playfair Display', serif;
   --font-ui:       'Rajdhani', sans-serif;
