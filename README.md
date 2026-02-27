@@ -21,7 +21,16 @@ Open browser at `http://localhost:8501`
 
 ## Version History
 
-### v1.1.0 â€” 2026-02-27 (Current)
+### v1.1.0 UI â€” 2026-02-27 (Current)
+**Petroleum Luxury Design System**
+
+- **New design identity**: Replaced Deep Field teal (`#00F5D4`) with Obsidian + Molten Gold (`#C9901A`) palette
+- **New fonts**: Playfair Display (italic serif headers with gold shimmer animation) + IBM Plex Mono (data/mono)
+- **Full-app coverage**: `styles.py`, `charts.py`, and all 5 page files updated — zero teal tokens remain
+- **Chart palette**: Gold/amber/platinum tones replace teal/violet/coral across all Plotly charts
+- **UI polish**: Gold left-border metric cards, gold tab underlines, gold button glow, noise texture background
+
+### v1.1.0 â€” 2026-02-27
 **Header-Aware Mapping & Streamlined UI**
 
 - **Synchronized Extraction**: Updated `utils/extractor.py` to be header-aware. It now validates "Day on stream" headers before pulling data, correctly handling early experiment stops.

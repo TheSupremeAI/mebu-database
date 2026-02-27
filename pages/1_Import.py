@@ -19,6 +19,24 @@ from utils.styles import inject_css, page_header, glass_card, section_label
 init_db()
 inject_css()
 
+st.markdown("""
+<style>
+[data-testid="stFileUploader"] {
+  border: 1px solid var(--gold-border) !important;
+  border-radius: var(--radius) !important;
+  background: var(--surface) !important;
+}
+label[data-testid="stWidgetLabel"] > div > p {
+  font-family: var(--font-ui) !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  color: var(--text-2) !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 DATA_DIR = Path(__file__).parent.parent / "EXPERIMENT DATA"
 
 st.markdown(page_header(
@@ -57,7 +75,7 @@ with col_info:
     st.markdown("&nbsp;", unsafe_allow_html=True)
     st.markdown(glass_card("""
       <div style="font-family:var(--font-display);font-size:0.7rem;font-weight:700;
-        letter-spacing:3px;text-transform:uppercase;color:var(--plasma);margin-bottom:16px;">
+        letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;">
         ◈ HOW TO IMPORT
       </div>
       <ol style="color:var(--text-2);font-size:0.86rem;line-height:2.1;margin:0;
@@ -66,7 +84,7 @@ with col_info:
         <li>Set the experiment name and type</li>
         <li>Enter the VR feed blend below</li>
         <li>Set reactor temperatures</li>
-        <li>Click <b style="color:var(--plasma);font-family:var(--font-display);
+        <li>Click <b style="color:var(--gold);font-family:var(--font-display);
           letter-spacing:1px;">IMPORT &amp; EXTRACT DATA</b></li>
       </ol>
       <div style="color:var(--text-3);font-size:0.78rem;margin-top:16px;

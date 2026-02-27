@@ -54,14 +54,14 @@ with card_col:
 
     st.markdown(f"""
     <div style="background:linear-gradient(135deg,var(--surface) 0%,var(--surface-2) 100%);
-                border:1px solid var(--border);border-top:2px solid var(--plasma);
+                border:1px solid var(--border);border-top:2px solid var(--gold);
                 border-radius:var(--radius);padding:24px 28px;margin-bottom:8px;
                 box-shadow:0 8px 32px rgba(0,0,0,0.4);position:relative;overflow:hidden;">
       <div style="position:absolute;top:0;right:0;width:160px;height:160px;
-        background:radial-gradient(circle at top right,var(--plasma-faint),transparent 70%);
+        background:radial-gradient(circle at top right,var(--gold-dim),transparent 70%);
         pointer-events:none;"></div>
       <div style="font-family:var(--font-display);font-size:0.7rem;font-weight:700;
-        letter-spacing:3px;text-transform:uppercase;color:var(--plasma);margin-bottom:12px;">
+        letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">
         ◈ EXPERIMENT RECORD
       </div>
       <h3 style="font-family:var(--font-display);color:var(--text);margin:0 0 18px;
@@ -85,7 +85,7 @@ with card_col:
           <td style="color:var(--text-3);font-family:var(--font-display);font-size:0.68rem;
             font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:5px 0;">
             Measurements</td>
-          <td style="font-family:var(--font-mono);color:var(--plasma);">
+          <td style="font-family:var(--font-mono);color:var(--gold);">
             {meas_count:,} readings across {days_count} days</td>
         </tr>
         <tr>
@@ -174,7 +174,7 @@ with tabs[0]:
 with tabs[1]:
     c1, c2 = st.columns(2)
     with c1:
-        chart_or_info("Sulfur Conversion", "wt%", [("SConv", "S Conv. (wt%)")], color="#00F5D4")
+        chart_or_info("Sulfur Conversion", "wt%", [("SConv", "S Conv. (wt%)")], color="#C9901A")
         chart_or_info("Nickel Conversion", "wt%", [("NiConv", "Ni Conv. (wt%)")], color="#00D4FF")
         chart_or_info("MCR Conversion", "wt%", [("MCRConv", "MCR Conv. (wt%)")], color="#C8A2C8")
         chart_or_info("C7 Asphaltene Conversion", "wt%", [("C7_AsphConv", "C7 Conv. (wt%)")], color="#FFB800")

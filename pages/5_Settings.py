@@ -38,9 +38,9 @@ st.markdown(f"""
 <div style="display:inline-flex;align-items:center;gap:12px;
   background:var(--surface);border:1px solid var(--border);
   border-radius:var(--radius);padding:10px 20px;margin-bottom:20px;">
-  <span style="font-family:var(--font-display);font-size:0.68rem;font-weight:600;
+  <span style="font-family:var(--font-ui);font-size:0.68rem;font-weight:700;
     letter-spacing:2px;text-transform:uppercase;color:var(--text-2);">Database records</span>
-  <span style="font-family:var(--font-mono);font-size:1rem;color:var(--plasma);
+  <span style="font-family:var(--font-mono);font-size:1rem;color:var(--gold-bright);
     font-weight:500;">{n_meas:,}</span>
 </div>
 """, unsafe_allow_html=True)
