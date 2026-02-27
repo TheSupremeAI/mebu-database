@@ -175,6 +175,7 @@ if st.button("🚀  Import & Extract Data", type="primary", use_container_width=
     else:
         inserted = bulk_insert_measurements(records)
         st.success(f"✅ **{exp_name}** imported successfully — {inserted} new measurements added ({len(records)} extracted from Excel).")
+from utils.db import get_phases
 
 # ── Database status ───────────────────────────────────────────────────────────
 st.markdown("<hr>", unsafe_allow_html=True)
@@ -186,17 +187,38 @@ if not experiments:
 else:
     rows = []
     for e in experiments:
-        blend = json.loads(e.get("vr_blend") or "[]")
-        blend_str = " / ".join(f"{v['name']} {v['pct']}%" for v in blend) if blend else "—"
+        phases = get_phases(e["id"])
+        n_phases = len(phases)
+
+        # Build VR feed names string from phases
+        feed_names = []
+        for p in phases:
+            fn = p.get("feed_name")
+            if fn and fn not in feed_names:
+                feed_names.append(fn)
+        vr_str = ", ".join(feed_names) if feed_names else "—"
+
+        # Build temperature string from phases
+        if phases:
+            temp_parts = []
+            for p in phases:
+                label = p.get("phase_name") or f"Phase"
+                rx1 = p.get("rx1_temp", 0)
+                rx2 = p.get("rx2_temp", 0)
+                rx3 = p.get("rx3_temp", 0)
+                temp_parts.append(f"{label}: {rx1:.0f}/{rx2:.0f}/{rx3:.0f}")
+            temp_str = " | ".join(temp_parts)
+        else:
+            temp_str = "—"
+
         rows.append({
             "ID": e["id"],
             "Experiment Name": e["exp_name"],
-            "Type": e.get("exp_type") or "—",
             "Start Date": e.get("start_date") or "—",
-            "VR Blend": blend_str,
-            "Rx1 °C": e.get("rx1_temp") or "—",
-            "Rx2 °C": e.get("rx2_temp") or "—",
-            "Rx3 °C": e.get("rx3_temp") or "—",
-            "Measurements": get_measurement_count(e["id"]),
+            "VR Feed": vr_str,
+            "Phases": n_phases,
+            "Temperature (Rx1/Rx2/Rx3)": temp_str,
+            "Records": get_measurement_count(e["id"]),
         })
     st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+
