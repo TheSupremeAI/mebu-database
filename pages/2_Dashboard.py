@@ -120,26 +120,6 @@ if not measurements:
     st.warning("No measurement data found for this experiment. Go to 📥 Import and (re-)import this file.")
     st.stop()
 
-# ── Summary Ribbon ────────────────────────────────────────────────────────────
-ribbon_col1, ribbon_col2, ribbon_col3, ribbon_col4 = st.columns(4)
-
-def latest_val(param_key):
-    rows = sorted([m for m in measurements if m["parameter"] == param_key],
-                  key=lambda r: r["day"])
-    return f"{rows[-1]['value']:.2f}" if rows else "—"
-
-with ribbon_col1:
-    st.metric("Cracking Conv. (wt%)", latest_val("CrkConv"))
-with ribbon_col2:
-    st.metric("Total Sedimentation (ppm)", latest_val("Sedimentation"))
-with ribbon_col3:
-    st.metric("Sulfur Conv. (wt%)", latest_val("SConv"))
-with ribbon_col4:
-    st.metric("LHSV Actual (hr⁻¹)", latest_val("LHSV_actual"))
-
-st.markdown("<hr style='margin:20px 0 28px;border-color:var(--border);'>", unsafe_allow_html=True)
-
-
 # ── Helper ────────────────────────────────────────────────────────────────────
 def get_series(param_key, label=None):
     rows = sorted([m for m in measurements if m["parameter"] == param_key],

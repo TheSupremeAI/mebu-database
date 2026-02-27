@@ -54,26 +54,6 @@ if not measurements:
     st.warning("No measurement data found for this experiment. Please (re-)import this file.")
     st.stop()
 
-# ── Summary Ribbon ────────────────────────────────────────────────────────────
-ribbon_col1, ribbon_col2, ribbon_col3, ribbon_col4 = st.columns(4)
-
-def latest_val(param_key):
-    rows = sorted([m for m in measurements if m["parameter"] == param_key],
-                  key=lambda r: r["day"])
-    return f"{rows[-1]['value']:.2f}" if rows else "—"
-
-with ribbon_col1:
-    st.metric("HPS API", latest_val("HPS_API"))
-with ribbon_col2:
-    st.metric("HPS Sulfur (wt%)", latest_val("HPS_Sulfur"))
-with ribbon_col3:
-    st.metric("LTO Density", latest_val("LTO_Density"))
-with ribbon_col4:
-    st.metric("ISV 560+ (wt%)", latest_val("ISV_560plus"))
-
-st.markdown("<hr style='margin:20px 0 28px;border-color:var(--border);'>", unsafe_allow_html=True)
-
-
 def get_series(param_key, label=None):
     rows = sorted([m for m in measurements if m["parameter"] == param_key],
                   key=lambda r: r["day"])
