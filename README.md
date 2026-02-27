@@ -29,6 +29,7 @@ Open browser at `http://localhost:8501`
 - **Full-app coverage**: `styles.py`, `charts.py`, and all 5 page files updated — zero teal tokens remain
 - **Chart palette**: Gold/amber/platinum tones replace teal/violet/coral across all Plotly charts
 - **UI polish**: Gold left-border metric cards, gold tab underlines, gold button glow, noise texture background
+- **Contrast fix**: Raised all text color stops for legibility — `--text` → `#DDD8CE`, `--text-2` → `#A89C8C`, `--text-3` → `#706050`, `--platinum` → `#F0EDE6`; chart tick/axis/legend fonts brightened to match
 
 ### v1.1.0 â€” 2026-02-27
 **Header-Aware Mapping & Streamlined UI**
