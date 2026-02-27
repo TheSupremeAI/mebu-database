@@ -7,4 +7,3 @@ dist/
 *.spec
 MEBU_Analytics.exe
 archive/
-EXPERIMENT DATA/*.xlsx

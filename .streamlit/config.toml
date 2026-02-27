@@ -1,4 +1,4 @@
-[theme]
+﻿[theme]
 base = "dark"
 primaryColor = "#00F5D4"
 backgroundColor = "#04060D"
@@ -8,3 +8,5 @@ font = "sans serif"
 
 [server]
 runOnSave = true
+enableCORS = false
+enableXsrfProtection = false
