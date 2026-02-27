@@ -6,14 +6,14 @@ import plotly.graph_objects as go
 
 # ── Palette (mirrors CSS design tokens) ───────────────────────────────────────
 PALETTE = [
-    "#C9901A",  # molten gold
-    "#FFB800",  # bright neon gold
-    "#FF6B6B",  # bright neon pink/red
+    "#FFB800",  # bright gold
+    "#00D4FF",  # cyan
+    "#FF6B6B",  # neon pink/red
     "#7B61FF",  # neon purple
-    "#00D2D3",  # cyan
+    "#00F5A0",  # neon green
     "#FF9F43",  # orange
     "#C8A2C8",  # lilac
-    "#A8C878",  # lime
+    "#C9901A",  # molten gold
 ]
 
 PAPER_BG   = "rgba(0,0,0,0)"
