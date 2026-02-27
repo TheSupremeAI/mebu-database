@@ -185,8 +185,9 @@ experiments = get_all_experiments()
 if not experiments:
     st.info("No experiments in the database yet. Use the form above to import your first experiment.")
 else:
+    sorted_exps = sorted(experiments, key=lambda e: e["exp_name"])
     rows = []
-    for e in experiments:
+    for idx, e in enumerate(sorted_exps, start=1):
         phases = get_phases(e["id"])
         n_phases = len(phases)
 
@@ -202,7 +203,7 @@ else:
         if phases:
             temp_parts = []
             for p in phases:
-                label = p.get("phase_name") or f"Phase"
+                label = p.get("phase_name") or "Phase"
                 rx1 = p.get("rx1_temp", 0)
                 rx2 = p.get("rx2_temp", 0)
                 rx3 = p.get("rx3_temp", 0)
@@ -212,7 +213,7 @@ else:
             temp_str = "—"
 
         rows.append({
-            "ID": e["id"],
+            "No": idx,
             "Experiment Name": e["exp_name"],
             "Start Date": e.get("start_date") or "—",
             "VR Feed": vr_str,
