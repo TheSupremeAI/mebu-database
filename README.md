@@ -1,8 +1,10 @@
-# MEBU Analytics Platform
+﻿# MEBU Analytics Platform
 
 **Version:** 1.1.0
 **Last Updated:** 2026-02-27
-**Status:** ✅ Production-ready — System re-mapped to HPS/Product properties
+**Status:** âœ… Production-ready â€” System re-mapped to HPS/Product properties
+**GitHub Repository:** [TheSupremeAI/mebu-database](https://github.com/TheSupremeAI/mebu-database)
+**Developer:** [TheSupremeAI](https://github.com/TheSupremeAI)
 
 ---
 
@@ -19,7 +21,7 @@ Open browser at `http://localhost:8501`
 
 ## Version History
 
-### v1.1.0 — 2026-02-27 (Current)
+### v1.1.0 â€” 2026-02-27 (Current)
 **Header-Aware Mapping & Streamlined UI**
 
 - **Synchronized Extraction**: Updated `utils/extractor.py` to be header-aware. It now validates "Day on stream" headers before pulling data, correctly handling early experiment stops.
@@ -33,8 +35,8 @@ Open browser at `http://localhost:8501`
 - **History Sync**: Fully synchronized the History comparison page with the new Dashboard structure.
 - **Database Reset**: Wiped old/duplicate records to allow for a clean re-import using the corrected 1.1.0 logic.
 
-### v1.0.0 — 2026-02-27
-**Initial build — Multi-page Streamlit + SQLite platform**
+### v1.0.0 â€” 2026-02-27
+**Initial build â€” Multi-page Streamlit + SQLite platform**
 
 - Replaced single Excel workflow with centralized SQLite database.
 - Built 4-page Streamlit app (Import, Dashboard, History, Settings).
@@ -46,25 +48,25 @@ Open browser at `http://localhost:8501`
 
 ```
 D:\Claude Project\MEBU Database\
-│
-├── MEBU_Analytics.exe              ← Double-click to launch
-├── main.py                         ← Streamlit entry point
-├── launcher.py                     ← Source code for .exe
-│
-├── pages/
-│   ├── 1_Import.py                 ← Load Excel files (Header-aware sync)
-│   ├── 2_Dashboard.py              ← Single experiment — Streamlined 3-tab view
-│   ├── 3_History.py                ← Cross-experiment overlay (Synced)
-│   ├── 4_Product_Results.py        ← Daily HPS, LTO, ISV & Gas results
-│   └── 5_Settings.py               ← Edit metadata & database cleanup
+â”‚
+â”œâ”€â”€ MEBU_Analytics.exe              â† Double-click to launch
+â”œâ”€â”€ main.py                         â† Streamlit entry point
+â”œâ”€â”€ launcher.py                     â† Source code for .exe
+â”‚
+â”œâ”€â”€ pages/
+â”‚   â”œâ”€â”€ 1_Import.py                 â† Load Excel files (Header-aware sync)
+â”‚   â”œâ”€â”€ 2_Dashboard.py              â† Single experiment â€” Streamlined 3-tab view
+â”‚   â”œâ”€â”€ 3_History.py                â† Cross-experiment overlay (Synced)
+â”‚   â”œâ”€â”€ 4_Product_Results.py        â† Daily HPS, LTO, ISV & Gas results
+â”‚   â””â”€â”€ 5_Settings.py               â† Edit metadata & database cleanup
 
-│
-├── utils/
-│   ├── db.py                       ← SQLite CRUD layer
-│   ├── extractor.py                ← Exact-match, header-aware extractor
-│   └── charts.py                   ← Deep Field Plotly factory
-│
-├── mebu_analytics.sqlite           ← ⚠️ Central database
+â”‚
+â”œâ”€â”€ utils/
+â”‚   â”œâ”€â”€ db.py                       â† SQLite CRUD layer
+â”‚   â”œâ”€â”€ extractor.py                â† Exact-match, header-aware extractor
+â”‚   â””â”€â”€ charts.py                   â† Deep Field Plotly factory
+â”‚
+â”œâ”€â”€ mebu_analytics.sqlite           â† âš ï¸ Central database
 ...
 ```
 
@@ -91,8 +93,8 @@ D:\Claude Project\MEBU Database\
 ## Maintenance & Re-importing
 
 **IMPORTANT:** Whenever the mapping logic in `utils/extractor.py` is updated, existing data should be refreshed:
-1. Go to **⚙️ Settings** → **Delete** all old experiments.
-2. Go to **📥 Import** → **Re-import** the 4 Master Excel files.
+1. Go to **âš™ï¸ Settings** â†’ **Delete** all old experiments.
+2. Go to **ðŸ“¥ Import** â†’ **Re-import** the 4 Master Excel files.
 3. This ensures all charts use the most accurate, synchronized data.
 
 ---
