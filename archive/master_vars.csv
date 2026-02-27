@@ -1,0 +1,151 @@
+Unnamed: 0,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5
+,,,,,VR
+,,,,,Aging-ABQ3358 
+,,Pilot Plant Operation--->,,,2026-02-23 00:00:00
+,,Lab Date (Sample Day)-->,,,2026-02-24 00:00:00
+,,Day on stream-->,,,1
+,,,,,%wt
+,,IBP-90,,,0
+,,90-160,,,0
+,,160-250,,,0
+,,250-360,,,1.091
+,,360-500,,,5.247
+,,500-560,,,8.571
+,,560 plus,,,85.09100000000001
+,,Total,,,100
+,,"560 plus, TOP acceptance'Dec24",,,
+,,"560 plus, TOP acceptance'Dec26",,,
+,,"560 plus, ART, acceptance",,,56.4181
+,,"560plus, MEBU25002",,,59.673
+,,"Ni, ppm",,,61.59
+,,"Ni, ppm, ART, Low and High",,,
+,,"Ni, ppm, TOP, Acceptance'Dec24",,,
+,,"Ni, ppm, ART, Acceptance",,,18.8
+,,"V, ppm",,,200.01
+,,"V, ppm, ART, Low and High",,,
+,,"V, ppm, TOP, Acceptance'Dec24",,,
+,,"V, ppm, ART, Acceptance",,,25.2
+,,"Fe, ppm",,,16.28
+,,,,,
+,,"N, wt% (ASTM D5762)",,,0.393063
+,,"N, wt% (ASTM D5762), ART, Low and High",,,
+,,"N, ppm, TOP, Acceptance'Dec24",,,
+,,"N, ppm, ART, Acceptance",,,3.307
+,,"S, wt% (ASTM D4294)",,,5.975
+,,"S, wt% (ASTM D4294), ART,   Low and High",,,
+,,"S, wt%, TOP, Acceptance'Dec24",,,
+,,"S, wt%, ART Acceptance",,,2.1057
+,,"C5 Asphaltene, wt%",,,23.743
+,,"C5 Asphaltene, wt%, ART, Low and High",,,
+,,"C5, wt%, TOP, Acceptance'Dec24",,,
+,,"C5, wt%, ART Acceptance",,,
+,,"C7 Asphaltene, wt%",,,13.27
+,,"C7 Asphaltene, wt%, ART, Low and High",,,
+,,"C7 Asphaltene, wt%, Acceptance'Dec24",,,
+,,"C7 Asphaltene, wt%, ART, Acceptance",,,6.55
+,,"MCRT, wt%",,,25.49
+,,"MCRT, wt%, ART, Low and High",,,
+,,"MCRT, wt%, TOP, Acceptance'Dec24",,,
+,,"MCRT, wt%, ART, Acceptance",,,13.93
+,,"C, wt% (ASTM D5291)",,,83.9
+,,"H, wt% (ASTM D5291)",,,9.748
+,,"N, wt% (ASTM D5291)",,,0.4384
+,,"S, wt%  (ASTM D4294)",,,5.975
+,,,,,
+,,"CN, wt%",,,83.88652530743988
+,,"HN, wt%",,,9.746434430237471
+,,"SN, wt",,,5.9740403898921715
+,,HN/CN,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,Lab Date--->,,,2026-02-24 00:00:00
+,,Flow Information,,,VR
+,,"Accumulative mass to Rx1 (Acc Mass_23.5 hrs), g",,,2797
+,,"VR rate Rx1, g/h",,,233.08333333333334
+,,"Accumulative mass to Rx2 (Acc Mass_23.5 hrs), g",,,1198
+,,"VR rate Rx2, g/h",,,99.83333333333333
+,,"Accumulative mass (Acc Mass_23.5 hrs), g",,,3995
+,,"Total rate, g/h (23.5hrs)",,,332.9166666666667
+,,"rate, g/h, ART",,,
+,,"LTO Split, wt/wt Liquid product : LTO/(LTO+HPS)",,,0
+,,"Density, g/ml",,,1.0542
+,,"Volumetric Flow rate, ml",,,315.8002908998925
+,,"MEBU LHSV, Actual, hr-1",,,0.5659503421145027
+,,"MEBU Target LHSV, hr-1",,,0.55
+,,"ISV LHSV, hr-1",,,2.3051116124079747
+,,"MEBU LHSV, hr-1, ART, Acceptance",,,0.55
+,,"LCF LHSV, hr-1",,,0.38
+,,"Pressure, barg",,,
+,,"Pressure, barg, ART",,,176.5
+,,"Temperature, degC",,,
+,,"Temperature, degC, ART",,,404
+,,,,,
+,,"IBP-90, g/h",,,0
+,,"90-160, g/h",,,0
+,,"160-250, g/h",,,0
+,,"250-360, g/h",,,3.6321208333333335
+,,"360-500, g/h",,,17.4681375
+,,"500-560, g/h",,,28.5342875
+,,"560 Plus, g/h",,,283.2821208333334
+,,Total g/h,,,332.91666666666674
+,,,,,
+,,"Ni, Rx1, g/h",,,0.0143556025
+,,"Ni, Rx2,  g/h",,,0.006148735
+,,"Ni, g/h",,,0.0205043375
+,,"V, Rx1, g/h",,,0.046618997499999995
+,,"V, Rx2, g/h",,,0.019967664999999996
+,,"V, g/h",,,0.0665866625
+,,"Fe, g/h",,,0.0054198833333333335
+,,"Total(Ni+V), g/h",,,0.087091
+,,,,,
+,,"S, g/h",,,19.891770833333332
+,,"N, g/h",,,1.3085722375
+,,"Total (S+N ), g/h",,,21.200343070833334
+,,,,,
+,,"C5 Asphaltene, g/h",,,79.04440416666667
+,,"C7 Asphaltene, g/h",,,44.178041666666665
+,,,,,
+,,"MCRT, g/h",,,84.86045833333334
+,,,,,
+,,"CN, g/h",,,279.2722238360186
+,,"HN, g/h",,,32.44750462399892
+,,"H/C Ratio, wt/wt",,,0.11618593563766387
+,,"H/C Ratio, wt/wt, ART",,,0.113
+,,,,,
+,,Molecular Weight,,,
+,,"CH4, g/h",,,C1
+,,"C2H6, g/h",,,C2
+,,"C3H8, g/h",,,C3
+,,"C4H10, g/h (Total)",,,C4
+,,"C5H12, g/h",,,C5
+,,"C6H14 plus, g/h",,,C6
+,,"H2S, g/h",,,S
+,,"NH3, g/h",,,N
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,VR Rate
+,,"Mass Flow, g/hr",,,332.9166666666667
+,,Unit Balance (H2S and NH3 included),,,1.0029274681172895
+,,,,,
+,,Unit Balance (Product/Feed),,,1.0029274681172895
+,,,,,
+,,Carbon Balance(Product/Feed),,,
