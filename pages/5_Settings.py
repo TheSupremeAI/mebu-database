@@ -271,7 +271,28 @@ if st.button("💾  Save All Changes", type="primary", key=f"ssave_{exp_id}"):
         })
     save_phases(exp_id, phases_for_db)
     update_experiment_meta(exp_id, notes=notes)
-    st.success("✅ Phases and notes saved successfully.")
+    st.success("✅ Phases and notes saved to database.")
+
+    # Auto-push to GitHub
+    import subprocess, os
+    repo_dir = str(Path(__file__).parent.parent)
+    try:
+        subprocess.run(["git", "add", "mebu_analytics.sqlite"],
+                       cwd=repo_dir, capture_output=True, timeout=10)
+        result = subprocess.run(
+            ["git", "commit", "-m", f"data: update phases for {selected_name}"],
+            cwd=repo_dir, capture_output=True, text=True, timeout=10)
+        if result.returncode == 0:
+            push = subprocess.run(["git", "push", "origin", "main"],
+                                  cwd=repo_dir, capture_output=True, text=True, timeout=30)
+            if push.returncode == 0:
+                st.success("☁️ Synced to GitHub.")
+            else:
+                st.warning("💾 Saved locally but push failed — sync manually.")
+        else:
+            st.info("💾 Saved locally (no new changes to push).")
+    except Exception:
+        st.info("💾 Saved locally (git not available).")
     st.rerun()
 
 # ── Phase Timeline Preview ────────────────────────────────────────────────────
