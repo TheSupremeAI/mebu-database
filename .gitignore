@@ -1,10 +1,10 @@
-.venv/
+﻿.venv/
 __pycache__/
 *.pyc
-.ipynb_checkpoints/
 .claude/
 build/
 dist/
 *.spec
-# We DO want to include the database and data for now so the app works immediately
-# mebu_analytics.sqlite
+MEBU_Analytics.exe
+archive/
+EXPERIMENT DATA/
