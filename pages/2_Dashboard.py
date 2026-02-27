@@ -1,6 +1,6 @@
 """
 MEBU Analytics — Dashboard Page
-Single experiment view with Lab Results Summary charts.
+Single experiment view with Lab Results Summary charts + Phase bands.
 """
 import streamlit as st
 import json
@@ -10,11 +10,12 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from utils.db import init_db, get_all_experiments, get_measurements, get_experiment
-from utils.charts import line_chart, vr_blend_donut, PALETTE
-from utils.styles import inject_css, page_header, temp_badge, section_label
+from utils.db import init_db, get_all_experiments, get_measurements, get_experiment, get_phases
+from utils.charts import line_chart, PALETTE, add_phase_bands
 
 init_db()
+
+from utils.styles import inject_css, page_header, temp_badge, section_label
 inject_css()
 
 st.markdown(page_header(
@@ -38,19 +39,33 @@ with st.sidebar:
 
 exp = get_experiment(exp_id)
 measurements = get_measurements(exp_id)
-vr_blend = json.loads(exp.get("vr_blend") or "[]")
+phases = get_phases(exp_id)
 avail_params = set(m["parameter"] for m in measurements)
 
 # ── Run metadata card ─────────────────────────────────────────────────────────
-card_col, donut_col = st.columns([2, 1])
+card_col, phase_col = st.columns([2, 1])
 
 with card_col:
-    temps_html = "".join(
-        temp_badge(rx, exp.get(key))
-        for rx, key in [("Rx-1", "rx1_temp"), ("Rx-2", "rx2_temp"), ("Rx-3", "rx3_temp")]
-    )
     meas_count = len(measurements)
     days_count = len(set(m["day"] for m in measurements)) if measurements else 0
+
+    # Show phase temperature ranges if available
+    if phases:
+        temps_parts = []
+        for p in phases:
+            rx_vals = []
+            for rx_label, rx_key in [("Rx-1", "rx1_temp"), ("Rx-2", "rx2_temp"), ("Rx-3", "rx3_temp")]:
+                val = p.get(rx_key)
+                if val:
+                    rx_vals.append(f"{rx_label}:{val:.0f}°")
+            phase_label = p.get("phase_name") or p.get("feed_name") or "Phase"
+            temps_parts.append(f"<small style='color:var(--text-3);'>{phase_label}:</small> {'  '.join(rx_vals)}")
+        temps_html = "<br>".join(temps_parts)
+    else:
+        temps_html = "".join(
+            temp_badge(rx, exp.get(key))
+            for rx, key in [("Rx-1", "rx1_temp"), ("Rx-2", "rx2_temp"), ("Rx-3", "rx3_temp")]
+        )
 
     st.markdown(f"""
     <div style="background:linear-gradient(135deg,var(--surface) 0%,var(--surface-2) 100%);
@@ -96,21 +111,40 @@ with card_col:
             {exp.get('notes') or '—'}</td>
         </tr>
       </table>
-      <div style="margin-top:18px;">{temps_html}</div>
+      <div style="margin-top:18px;font-family:var(--font-mono);font-size:0.78rem;
+        color:var(--text-2);line-height:1.8;">{temps_html}</div>
     </div>
     """, unsafe_allow_html=True)
 
-with donut_col:
-    if vr_blend:
-        donut_fig = vr_blend_donut(vr_blend)
-        if donut_fig:
-            st.plotly_chart(donut_fig, use_container_width=True)
+with phase_col:
+    if phases and len(phases) >= 1:
+        st.markdown(section_label("Phase Summary"), unsafe_allow_html=True)
+        for pi, p in enumerate(phases):
+            color = PALETTE[pi % len(PALETTE)]
+            feed_label = p.get("feed_name") or "No Feed"
+            st.markdown(f"""
+            <div style="background:var(--surface);border:1px solid {color}25;
+                        border-left:3px solid {color};border-radius:var(--radius);
+                        padding:10px 14px;margin-bottom:6px;">
+              <div style="font-family:var(--font-display);font-size:0.65rem;font-weight:700;
+                letter-spacing:2px;text-transform:uppercase;color:{color};">
+                {p.get('phase_name') or f'Phase {pi+1}'}</div>
+              <div style="font-family:var(--font-mono);font-size:0.82rem;color:var(--text);
+                margin-top:2px;">Day {p['from_day']}–{p['to_day']}</div>
+              <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-2);
+                margin-top:2px;">{feed_label}</div>
+              <div style="font-family:var(--font-mono);font-size:0.62rem;color:var(--text-3);
+                margin-top:2px;">
+                {p.get('rx1_temp', 0):.0f}° / {p.get('rx2_temp', 0):.0f}° / {p.get('rx3_temp', 0):.0f}°
+              </div>
+            </div>
+            """, unsafe_allow_html=True)
     else:
         st.markdown("""
         <div style="background:var(--surface);border:1px solid var(--border);
                     border-radius:var(--radius);padding:40px 20px;text-align:center;">
           <div style="font-family:var(--font-mono);color:var(--text-3);font-size:0.82rem;
-            letter-spacing:1px;">NO VR BLEND SET</div>
+            letter-spacing:1px;">NO PHASES SET</div>
           <div style="color:var(--text-3);font-size:0.78rem;margin-top:8px;
             font-family:var(--font-body);">Edit in ⚙️ Settings</div>
         </div>
@@ -134,6 +168,7 @@ def chart_or_info(title, y_title, param_pairs, color=None):
     """
     Build a line chart from a list of (param_key, label) pairs.
     color: optional hex color to force for the first series.
+    Automatically adds phase bands if phases exist.
     """
     series_list = []
     for i, (pk, lbl) in enumerate(param_pairs):
@@ -145,6 +180,8 @@ def chart_or_info(title, y_title, param_pairs, color=None):
     
     if series_list:
         fig = line_chart(title, y_title, series_list)
+        if phases:
+            add_phase_bands(fig, phases)
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.info(f"Data not available for this chart in the selected experiment.")
@@ -212,6 +249,8 @@ with tabs[3]:
             s, _, _ = get_series(pk)
             series_list.append(s)
         fig = line_chart("Custom Parameter Selection", "Value", series_list)
+        if phases:
+            add_phase_bands(fig, phases)
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.info("Select one or more parameters above to plot.")

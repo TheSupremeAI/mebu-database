@@ -9,8 +9,8 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from utils.db import init_db, get_all_experiments, get_measurements, get_experiment
-from utils.charts import line_chart
+from utils.db import init_db, get_all_experiments, get_measurements, get_experiment, get_phases
+from utils.charts import line_chart, add_phase_bands
 from utils.styles import inject_css, page_header, section_label
 
 init_db()
@@ -36,6 +36,7 @@ with st.sidebar:
     exp_id = exp_map[selected_name]
 
 measurements = get_measurements(exp_id)
+phases = get_phases(exp_id)
 avail_params = set(m["parameter"] for m in measurements)
 
 with st.sidebar:
@@ -73,6 +74,8 @@ def product_chart(title, y_title, param_pairs, color=None):
     
     if series_list:
         fig = line_chart(title, y_title, series_list)
+        if phases:
+            add_phase_bands(fig, phases)
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.info(f"Data not available for {title}.")

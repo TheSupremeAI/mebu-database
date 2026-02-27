@@ -55,8 +55,31 @@ def init_db():
         )
     """)
 
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS vr_feeds (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            feed_name   TEXT NOT NULL UNIQUE,
+            composition TEXT DEFAULT '[]'
+        )
+    """)
+
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS phases (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            exp_id      INTEGER REFERENCES experiments(id) ON DELETE CASCADE,
+            phase_name  TEXT DEFAULT '',
+            from_day    INTEGER NOT NULL,
+            to_day      INTEGER NOT NULL,
+            feed_id     INTEGER REFERENCES vr_feeds(id),
+            rx1_temp    REAL,
+            rx2_temp    REAL,
+            rx3_temp    REAL
+        )
+    """)
+
     conn.commit()
     conn.close()
+    _migrate_existing_to_phases()
 
 
 # ── Experiments ──────────────────────────────────────────────────────────────
@@ -124,6 +147,78 @@ def delete_experiment(exp_id):
     conn.execute("DELETE FROM experiments WHERE id=?", (exp_id,))
     conn.commit()
     conn.close()
+
+
+# ── VR Feeds ─────────────────────────────────────────────────────────────────
+
+def upsert_vr_feed(feed_name, composition):
+    """Insert or update a VR feed recipe. Returns feed_id."""
+    comp_json = json.dumps(composition or [])
+    conn = get_conn()
+    c = conn.cursor()
+    c.execute("""
+        INSERT INTO vr_feeds (feed_name, composition)
+        VALUES (?, ?)
+        ON CONFLICT(feed_name) DO UPDATE SET composition = excluded.composition
+    """, (feed_name, comp_json))
+    conn.commit()
+    feed_id = c.execute("SELECT id FROM vr_feeds WHERE feed_name=?", (feed_name,)).fetchone()[0]
+    conn.close()
+    return feed_id
+
+
+def get_all_vr_feeds():
+    conn = get_conn()
+    rows = conn.execute("SELECT * FROM vr_feeds ORDER BY feed_name").fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
+def get_vr_feed(feed_id):
+    conn = get_conn()
+    row = conn.execute("SELECT * FROM vr_feeds WHERE id=?", (feed_id,)).fetchone()
+    conn.close()
+    return dict(row) if row else None
+
+
+def delete_vr_feed(feed_id):
+    conn = get_conn()
+    conn.execute("DELETE FROM vr_feeds WHERE id=?", (feed_id,))
+    conn.commit()
+    conn.close()
+
+
+# ── Phases ───────────────────────────────────────────────────────────────────
+
+def save_phases(exp_id, phases_list):
+    """Replace all phases for an experiment.
+    phases_list: [{"phase_name", "from_day", "to_day", "feed_id", "rx1_temp", "rx2_temp", "rx3_temp"}]
+    """
+    conn = get_conn()
+    c = conn.cursor()
+    c.execute("DELETE FROM phases WHERE exp_id=?", (exp_id,))
+    for p in phases_list:
+        c.execute("""
+            INSERT INTO phases (exp_id, phase_name, from_day, to_day, feed_id, rx1_temp, rx2_temp, rx3_temp)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (exp_id, p.get("phase_name", ""), p["from_day"], p["to_day"],
+              p.get("feed_id"), p.get("rx1_temp"), p.get("rx2_temp"), p.get("rx3_temp")))
+    conn.commit()
+    conn.close()
+
+
+def get_phases(exp_id):
+    """Return phases for one experiment, joined with feed name."""
+    conn = get_conn()
+    rows = conn.execute("""
+        SELECT p.*, f.feed_name, f.composition
+        FROM phases p
+        LEFT JOIN vr_feeds f ON p.feed_id = f.id
+        WHERE p.exp_id=?
+        ORDER BY p.from_day
+    """, (exp_id,)).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
 
 
 # ── Measurements ─────────────────────────────────────────────────────────────
@@ -219,3 +314,37 @@ def get_measurement_count(exp_id):
     n = conn.execute("SELECT COUNT(*) FROM measurements WHERE exp_id=?", (exp_id,)).fetchone()[0]
     conn.close()
     return n
+
+
+# ── Migration ────────────────────────────────────────────────────────────────
+
+def _migrate_existing_to_phases():
+    """One-time migration: convert old vr_blend + temps into a single phase per experiment."""
+    conn = get_conn()
+    c = conn.cursor()
+    experiments = c.execute("SELECT * FROM experiments").fetchall()
+    for exp in experiments:
+        exp = dict(exp)
+        existing = c.execute("SELECT COUNT(*) FROM phases WHERE exp_id=?", (exp["id"],)).fetchone()[0]
+        if existing > 0:
+            continue
+        vr_blend = json.loads(exp.get("vr_blend") or "[]")
+        if not vr_blend and not exp.get("rx1_temp"):
+            continue
+        max_day_row = c.execute("SELECT MAX(day) FROM measurements WHERE exp_id=?", (exp["id"],)).fetchone()
+        max_day = max_day_row[0] if max_day_row and max_day_row[0] else 28
+        feed_id = None
+        if vr_blend:
+            feed_name = f"{exp['exp_name']}_blend"
+            comp_json = json.dumps(vr_blend)
+            c.execute("INSERT OR IGNORE INTO vr_feeds (feed_name, composition) VALUES (?, ?)",
+                      (feed_name, comp_json))
+            feed_row = c.execute("SELECT id FROM vr_feeds WHERE feed_name=?", (feed_name,)).fetchone()
+            feed_id = feed_row[0] if feed_row else None
+        c.execute("""
+            INSERT INTO phases (exp_id, phase_name, from_day, to_day, feed_id, rx1_temp, rx2_temp, rx3_temp)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (exp["id"], "Default", 1, max_day, feed_id,
+              exp.get("rx1_temp"), exp.get("rx2_temp"), exp.get("rx3_temp")))
+    conn.commit()
+    conn.close()

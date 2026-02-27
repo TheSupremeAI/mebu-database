@@ -121,6 +121,65 @@ def _add_art_band(fig, art_low, art_high, n_days=28):
     ))
 
 
+# ── Phase band colors ─────────────────────────────────────────────────────────
+PHASE_COLORS = [
+    "rgba(201,144,26,0.08)",   # gold
+    "rgba(0,212,255,0.08)",    # cyan
+    "rgba(123,97,255,0.08)",   # purple
+    "rgba(255,107,107,0.08)",  # pink
+    "rgba(0,245,160,0.08)",    # green
+    "rgba(255,159,67,0.08)",   # orange
+]
+
+PHASE_BORDER_COLORS = [
+    "rgba(201,144,26,0.25)",
+    "rgba(0,212,255,0.25)",
+    "rgba(123,97,255,0.25)",
+    "rgba(255,107,107,0.25)",
+    "rgba(0,245,160,0.25)",
+    "rgba(255,159,67,0.25)",
+]
+
+PHASE_TEXT_COLORS = [
+    "rgba(201,144,26,0.7)",
+    "rgba(0,212,255,0.7)",
+    "rgba(123,97,255,0.7)",
+    "rgba(255,107,107,0.7)",
+    "rgba(0,245,160,0.7)",
+    "rgba(255,159,67,0.7)",
+]
+
+
+def add_phase_bands(fig, phases):
+    """Add vertical colored bands to a chart showing experiment phases.
+    phases: [{"from_day": int, "to_day": int, "feed_name": str, ...}]
+    """
+    if not phases or len(phases) < 2:
+        return  # No bands needed for single-phase experiments
+    for i, p in enumerate(phases):
+        color = PHASE_COLORS[i % len(PHASE_COLORS)]
+        border = PHASE_BORDER_COLORS[i % len(PHASE_BORDER_COLORS)]
+        text_color = PHASE_TEXT_COLORS[i % len(PHASE_TEXT_COLORS)]
+        feed_label = p.get("feed_name") or p.get("phase_name") or f"Phase {i+1}"
+        fig.add_vrect(
+            x0=p["from_day"] - 0.5,
+            x1=p["to_day"] + 0.5,
+            fillcolor=color,
+            line=dict(color=border, width=1, dash="dot"),
+            layer="below",
+        )
+        fig.add_annotation(
+            x=(p["from_day"] + p["to_day"]) / 2,
+            y=1.0,
+            yref="paper",
+            text=f"<b>{feed_label}</b>",
+            showarrow=False,
+            font=dict(size=9, color=text_color,
+                      family="'Rajdhani', sans-serif"),
+            yshift=10,
+        )
+
+
 def line_chart(title, y_title, series_list, art_low=None, art_high=None):
     """
     Generic line chart with Deep Field styling.

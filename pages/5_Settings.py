@@ -1,6 +1,6 @@
 """
 MEBU Analytics — Settings Page
-Edit experiment metadata: VR blend, reactor temperatures, notes.
+Phase Timeline Editor + VR Feed Library + Notes.
 """
 import streamlit as st
 import json
@@ -10,16 +10,18 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from utils.db import (init_db, get_all_experiments, get_experiment,
-                      update_experiment_meta, delete_experiment, get_measurement_count)
+                      update_experiment_meta, delete_experiment, get_measurement_count,
+                      get_all_vr_feeds, upsert_vr_feed, delete_vr_feed,
+                      save_phases, get_phases)
 from utils.styles import inject_css, page_header, section_label
-from utils.charts import PALETTE
+from utils.charts import PALETTE, PHASE_COLORS, PHASE_BORDER_COLORS
 
 init_db()
 inject_css()
 
 st.markdown(page_header(
     "Settings",
-    subtitle="Edit VR blend composition, reactor temperatures, and notes for any experiment.",
+    subtitle="Manage experiment phases, VR feed library, and metadata.",
     icon="⚙️",
 ), unsafe_allow_html=True)
 
@@ -45,111 +47,264 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# ── VR Blend editor ───────────────────────────────────────────────────────────
-st.markdown(section_label("VR Feed Blend"), unsafe_allow_html=True)
-current_blend = json.loads(exp.get("vr_blend") or "[]")
+# ══════════════════════════════════════════════════════════════════════════════
+# ── VR Feed Library ──────────────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+st.markdown(section_label("📚 VR Feed Library"), unsafe_allow_html=True)
 
-sess_key = f"settings_vr_{exp_id}"
-if sess_key not in st.session_state:
-    st.session_state[sess_key] = (
-        [{"name": v["name"], "pct": v["pct"]} for v in current_blend]
-        if current_blend else [{"name": "", "pct": 0.0}]
-    )
+with st.expander("Manage VR Feed Recipes", expanded=False):
+    feeds = get_all_vr_feeds()
 
-vr_blend_new = []
-rows_to_del  = []
+    # ── Session state for new feed form ──
+    if "new_feed_mode" not in st.session_state:
+        st.session_state["new_feed_mode"] = False
 
-col_h1, col_h2, col_h3 = st.columns([3, 2, 1])
-col_h1.markdown(
-    "<small style='color:var(--text-3);font-family:var(--font-display);"
-    "letter-spacing:1px;font-size:0.7rem;text-transform:uppercase;'>VR Name</small>",
-    unsafe_allow_html=True
-)
-col_h2.markdown(
-    "<small style='color:var(--text-3);font-family:var(--font-display);"
-    "letter-spacing:1px;font-size:0.7rem;text-transform:uppercase;'>% Usage (wt%)</small>",
-    unsafe_allow_html=True
-)
+    # ── Existing feeds ──
+    if feeds:
+        for fi, feed in enumerate(feeds):
+            comp = json.loads(feed.get("composition") or "[]")
+            comp_str = ", ".join(f"{c['name']} {c['pct']:.0f}%" for c in comp) if comp else "No composition"
+            col_name, col_del = st.columns([5, 1])
+            col_name.markdown(f"""
+            <div style="background:var(--surface);border:1px solid var(--border);
+                        border-radius:var(--radius);padding:12px 16px;margin-bottom:6px;">
+              <div style="font-family:var(--font-display);font-size:0.82rem;font-weight:700;
+                color:var(--gold);letter-spacing:1px;text-transform:uppercase;">
+                {feed['feed_name']}</div>
+              <div style="font-family:var(--font-mono);font-size:0.78rem;color:var(--text-2);
+                margin-top:4px;">{comp_str}</div>
+            </div>
+            """, unsafe_allow_html=True)
+            if col_del.button("🗑️", key=f"delfeed_{feed['id']}"):
+                delete_vr_feed(feed["id"])
+                st.rerun()
+    else:
+        st.caption("No feeds in library yet. Create one below.")
 
-for i, row in enumerate(st.session_state[sess_key]):
-    c1, c2, c3 = st.columns([3, 2, 1])
-    name_v = c1.text_input(
-        f"s_name_{exp_id}_{i}", value=row.get("name", ""),
-        label_visibility="collapsed", placeholder="VR Name"
-    )
-    pct_v = c2.number_input(
-        f"s_pct_{exp_id}_{i}", value=float(row.get("pct", 0.0)),
-        min_value=0.0, max_value=100.0, step=1.0, label_visibility="collapsed"
-    )
-    if c3.button("✕", key=f"sdel_{exp_id}_{i}"):
-        rows_to_del.append(i)
-    if name_v.strip():
-        vr_blend_new.append({"name": name_v.strip(), "pct": pct_v})
+    st.markdown("---")
+    st.markdown("##### ➕ Create New VR Feed")
 
-for idx in sorted(rows_to_del, reverse=True):
-    st.session_state[sess_key].pop(idx)
-if rows_to_del:
-    st.rerun()
+    new_feed_name = st.text_input("Feed Name (e.g. ABQ3358)", key="new_feed_name",
+                                   placeholder="ABQ3358")
 
-if len(st.session_state[sess_key]) < 6:
-    if st.button("+ Add VR Component", key=f"sadd_{exp_id}", type="secondary"):
-        st.session_state[sess_key].append({"name": "", "pct": 0.0})
+    # Composition rows
+    comp_key = "new_feed_comp"
+    if comp_key not in st.session_state:
+        st.session_state[comp_key] = [{"name": "", "pct": 0.0}]
+
+    ch1, ch2, ch3 = st.columns([3, 2, 1])
+    ch1.markdown("<small style='color:var(--text-3);font-family:var(--font-display);"
+                 "letter-spacing:1px;font-size:0.7rem;text-transform:uppercase;'>Crude VR Name</small>",
+                 unsafe_allow_html=True)
+    ch2.markdown("<small style='color:var(--text-3);font-family:var(--font-display);"
+                 "letter-spacing:1px;font-size:0.7rem;text-transform:uppercase;'>% (wt%)</small>",
+                 unsafe_allow_html=True)
+
+    comp_new = []
+    comp_to_del = []
+    for ci, crow in enumerate(st.session_state[comp_key]):
+        cc1, cc2, cc3 = st.columns([3, 2, 1])
+        cn = cc1.text_input(f"comp_n_{ci}", value=crow.get("name", ""),
+                           label_visibility="collapsed", placeholder="Basrah Heavy")
+        cp = cc2.number_input(f"comp_p_{ci}", value=float(crow.get("pct", 0.0)),
+                             min_value=0.0, max_value=100.0, step=1.0,
+                             label_visibility="collapsed")
+        if cc3.button("✕", key=f"comp_del_{ci}"):
+            comp_to_del.append(ci)
+        if cn.strip():
+            comp_new.append({"name": cn.strip(), "pct": cp})
+
+    for idx in sorted(comp_to_del, reverse=True):
+        st.session_state[comp_key].pop(idx)
+    if comp_to_del:
         st.rerun()
 
-total_pct = sum(v["pct"] for v in vr_blend_new)
-if vr_blend_new:
-    if abs(total_pct - 100.0) < 0.1:
-        st.success(f"✅ Total: {total_pct:.1f}%")
-    else:
-        st.warning(f"⚠️ Total: {total_pct:.1f}% (should be 100%)")
+    bc1, bc2 = st.columns(2)
+    if bc1.button("+ Add Component", key="add_comp_row"):
+        st.session_state[comp_key].append({"name": "", "pct": 0.0})
+        st.rerun()
 
-# ── Temperatures & Notes ──────────────────────────────────────────────────────
+    if bc2.button("💾 Save Feed", key="save_new_feed", type="primary"):
+        if new_feed_name.strip() and comp_new:
+            upsert_vr_feed(new_feed_name.strip(), comp_new)
+            st.session_state[comp_key] = [{"name": "", "pct": 0.0}]
+            st.success(f"✅ Feed '{new_feed_name.strip()}' saved!")
+            st.rerun()
+        else:
+            st.error("Enter a feed name and at least one component.")
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# ── Phase Timeline Editor ────────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
 st.markdown("<br>", unsafe_allow_html=True)
-st.markdown(section_label("Reactor Temperatures & Notes"), unsafe_allow_html=True)
-tc1, tc2, tc3 = st.columns(3)
-rx1 = tc1.number_input("Rx-1 (°C)", value=float(exp.get("rx1_temp") or 404.0),
-                        step=0.5, format="%.1f", key=f"srx1_{exp_id}")
-rx2 = tc2.number_input("Rx-2 (°C)", value=float(exp.get("rx2_temp") or 405.0),
-                        step=0.5, format="%.1f", key=f"srx2_{exp_id}")
-rx3 = tc3.number_input("Rx-3 (°C)", value=float(exp.get("rx3_temp") or 406.0),
-                        step=0.5, format="%.1f", key=f"srx3_{exp_id}")
+st.markdown(section_label("🔬 Phase Timeline Editor"), unsafe_allow_html=True)
+
+# Load existing phases
+existing_phases = get_phases(exp_id)
+feeds = get_all_vr_feeds()  # refresh
+feed_map = {f["id"]: f["feed_name"] for f in feeds}
+feed_names = ["— None —"] + [f["feed_name"] for f in feeds]
+feed_id_by_name = {f["feed_name"]: f["id"] for f in feeds}
+
+phase_sess_key = f"phases_{exp_id}"
+if phase_sess_key not in st.session_state:
+    if existing_phases:
+        st.session_state[phase_sess_key] = [
+            {
+                "phase_name": p.get("phase_name") or "",
+                "from_day": p.get("from_day") or 1,
+                "to_day": p.get("to_day") or 28,
+                "feed_name": p.get("feed_name") or "— None —",
+                "rx1_temp": p.get("rx1_temp") or 404.0,
+                "rx2_temp": p.get("rx2_temp") or 405.0,
+                "rx3_temp": p.get("rx3_temp") or 406.0,
+            }
+            for p in existing_phases
+        ]
+    else:
+        st.session_state[phase_sess_key] = [{
+            "phase_name": "Phase 1",
+            "from_day": 1,
+            "to_day": 28,
+            "feed_name": "— None —",
+            "rx1_temp": 404.0,
+            "rx2_temp": 405.0,
+            "rx3_temp": 406.0,
+        }]
+
+phases_to_del = []
+
+for pi, phase in enumerate(st.session_state[phase_sess_key]):
+    phase_color = PALETTE[pi % len(PALETTE)]
+
+    st.markdown(f"""
+    <div style="background:var(--surface);border:1px solid {phase_color}25;
+                border-left:3px solid {phase_color};border-radius:var(--radius);
+                padding:16px 20px;margin-bottom:10px;">
+      <div style="font-family:var(--font-display);font-size:0.72rem;font-weight:700;
+        letter-spacing:2px;text-transform:uppercase;color:{phase_color};margin-bottom:10px;">
+        ◆ Phase {pi+1}
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Row 1: Phase Name + Day Range + Delete
+    r1c1, r1c2, r1c3, r1c4 = st.columns([3, 1.5, 1.5, 0.5])
+    pname = r1c1.text_input("Phase Name", value=phase.get("phase_name", ""),
+                            key=f"pname_{exp_id}_{pi}", placeholder="e.g. Catalyst Aging")
+    fday = r1c2.number_input("From Day", value=int(phase.get("from_day", 1)),
+                             min_value=1, max_value=365, step=1, key=f"fday_{exp_id}_{pi}")
+    tday = r1c3.number_input("To Day", value=int(phase.get("to_day", 28)),
+                             min_value=1, max_value=365, step=1, key=f"tday_{exp_id}_{pi}")
+    if r1c4.button("✕", key=f"pdel_{exp_id}_{pi}"):
+        phases_to_del.append(pi)
+
+    # Row 2: VR Feed + Temperatures
+    r2c1, r2c2, r2c3, r2c4 = st.columns([2.5, 1.5, 1.5, 1.5])
+    current_feed = phase.get("feed_name", "— None —")
+    feed_idx = feed_names.index(current_feed) if current_feed in feed_names else 0
+    selected_feed = r2c1.selectbox("VR Feed", feed_names, index=feed_idx,
+                                    key=f"pfeed_{exp_id}_{pi}")
+    rx1 = r2c2.number_input("Rx-1 (°C)", value=float(phase.get("rx1_temp", 404.0)),
+                            step=0.5, format="%.1f", key=f"prx1_{exp_id}_{pi}")
+    rx2 = r2c3.number_input("Rx-2 (°C)", value=float(phase.get("rx2_temp", 405.0)),
+                            step=0.5, format="%.1f", key=f"prx2_{exp_id}_{pi}")
+    rx3 = r2c4.number_input("Rx-3 (°C)", value=float(phase.get("rx3_temp", 406.0)),
+                            step=0.5, format="%.1f", key=f"prx3_{exp_id}_{pi}")
+
+    # Update session state
+    st.session_state[phase_sess_key][pi] = {
+        "phase_name": pname,
+        "from_day": fday,
+        "to_day": tday,
+        "feed_name": selected_feed,
+        "rx1_temp": rx1,
+        "rx2_temp": rx2,
+        "rx3_temp": rx3,
+    }
+
+# Delete phases
+for idx in sorted(phases_to_del, reverse=True):
+    st.session_state[phase_sess_key].pop(idx)
+if phases_to_del:
+    st.rerun()
+
+# Add Phase button
+if len(st.session_state[phase_sess_key]) < 8:
+    if st.button("➕ Add Phase", key=f"padd_{exp_id}", type="secondary"):
+        last = st.session_state[phase_sess_key][-1] if st.session_state[phase_sess_key] else {}
+        next_from = (last.get("to_day", 0) or 0) + 1
+        st.session_state[phase_sess_key].append({
+            "phase_name": f"Phase {len(st.session_state[phase_sess_key]) + 1}",
+            "from_day": next_from,
+            "to_day": next_from + 6,
+            "feed_name": "— None —",
+            "rx1_temp": last.get("rx1_temp", 404.0),
+            "rx2_temp": last.get("rx2_temp", 405.0),
+            "rx3_temp": last.get("rx3_temp", 406.0),
+        })
+        st.rerun()
+
+# ── Notes ─────────────────────────────────────────────────────────────────────
+st.markdown("<br>", unsafe_allow_html=True)
+st.markdown(section_label("Notes"), unsafe_allow_html=True)
 notes = st.text_area("Notes", value=exp.get("notes") or "",
                       height=100, key=f"snotes_{exp_id}",
                       placeholder="Catalyst info, run conditions, observations...")
 
+# ── Save button ──────────────────────────────────────────────────────────────
 st.markdown("<br>", unsafe_allow_html=True)
-if st.button("💾  Save Changes", type="primary", key=f"ssave_{exp_id}", use_container_width=False):
-    update_experiment_meta(
-        exp_id,
-        vr_blend=vr_blend_new,
-        rx1_temp=rx1, rx2_temp=rx2, rx3_temp=rx3,
-        notes=notes,
-    )
-    st.success("✅ Changes saved successfully.")
+if st.button("💾  Save All Changes", type="primary", key=f"ssave_{exp_id}"):
+    # Build phases list for DB
+    phases_for_db = []
+    for p in st.session_state[phase_sess_key]:
+        feed_id = feed_id_by_name.get(p["feed_name"]) if p["feed_name"] != "— None —" else None
+        phases_for_db.append({
+            "phase_name": p["phase_name"],
+            "from_day": p["from_day"],
+            "to_day": p["to_day"],
+            "feed_id": feed_id,
+            "rx1_temp": p["rx1_temp"],
+            "rx2_temp": p["rx2_temp"],
+            "rx3_temp": p["rx3_temp"],
+        })
+    save_phases(exp_id, phases_for_db)
+    update_experiment_meta(exp_id, notes=notes)
+    st.success("✅ Phases and notes saved successfully.")
     st.rerun()
 
-# ── Preview of current blend ──────────────────────────────────────────────────
-if vr_blend_new:
+# ── Phase Timeline Preview ────────────────────────────────────────────────────
+if st.session_state[phase_sess_key]:
     st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown(section_label("Current VR Blend Preview"), unsafe_allow_html=True)
-    blend_cols = st.columns(len(vr_blend_new))
-    for i, v in enumerate(vr_blend_new):
-        color = PALETTE[i % len(PALETTE)]
-        with blend_cols[i]:
+    st.markdown(section_label("Phase Timeline Preview"), unsafe_allow_html=True)
+
+    phase_cols = st.columns(len(st.session_state[phase_sess_key]))
+    for pi, p in enumerate(st.session_state[phase_sess_key]):
+        color = PALETTE[pi % len(PALETTE)]
+        with phase_cols[pi]:
+            feed_display = p["feed_name"] if p["feed_name"] != "— None —" else "No Feed"
             st.markdown(f"""
             <div style="background:var(--surface);border:1px solid {color}25;
-                        border-top:2px solid {color};border-radius:var(--radius);
-                        padding:16px 12px;text-align:center;position:relative;overflow:hidden;">
-              <div style="position:absolute;top:0;right:0;width:60px;height:60px;
-                background:radial-gradient(circle at top right,{color}12,transparent 70%);
+                        border-top:3px solid {color};border-radius:var(--radius);
+                        padding:14px 10px;text-align:center;position:relative;overflow:hidden;">
+              <div style="position:absolute;top:0;right:0;width:50px;height:50px;
+                background:radial-gradient(circle at top right,{color}15,transparent 70%);
                 pointer-events:none;"></div>
-              <div style="font-family:var(--font-mono);font-size:1.4rem;font-weight:500;
-                color:{color};">{v['pct']:.0f}%</div>
-              <div style="font-family:var(--font-display);font-size:0.72rem;font-weight:600;
-                letter-spacing:1px;color:var(--text-2);margin-top:6px;text-transform:uppercase;">
-                {v['name']}</div>
+              <div style="font-family:var(--font-display);font-size:0.65rem;font-weight:700;
+                letter-spacing:2px;text-transform:uppercase;color:{color};margin-bottom:6px;">
+                {p.get('phase_name') or f'Phase {pi+1}'}</div>
+              <div style="font-family:var(--font-mono);font-size:1.1rem;font-weight:500;
+                color:{color};">Day {p['from_day']}–{p['to_day']}</div>
+              <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-2);
+                margin-top:6px;">{feed_display}</div>
+              <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text-3);
+                margin-top:4px;">
+                {p.get('rx1_temp', 0):.0f}° / {p.get('rx2_temp', 0):.0f}° / {p.get('rx3_temp', 0):.0f}°
+              </div>
             </div>
             """, unsafe_allow_html=True)
+
 
 # ── Danger zone ────────────────────────────────────────────────────────────────
 st.markdown("<br><hr>", unsafe_allow_html=True)
