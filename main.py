@@ -34,7 +34,7 @@ col1, col2, col3, col4 = st.columns(4)
 col1.metric("Experiments Loaded", len(experiments))
 col2.metric("Total Measurements", f"{total_measurements:,}")
 col3.metric("Database", "SQLite")
-col4.metric("Platform Version", "v1.1")
+col4.metric("Platform Version", "v1.2")
 
 st.markdown("<br>", unsafe_allow_html=True)
 
@@ -118,18 +118,33 @@ if experiments:
     st.markdown("<hr>", unsafe_allow_html=True)
     st.markdown("### Loaded Experiments")
     import pandas as pd
+    from utils.db import get_phases
+    sorted_exps = sorted(experiments, key=lambda e: e["exp_name"])
     rows = []
-    for e in experiments:
-        blend = json.loads(e.get("vr_blend") or "[]")
-        blend_str = " / ".join(f"{v['name']} {v['pct']}%" for v in blend) if blend else "—"
+    for idx, e in enumerate(sorted_exps, start=1):
+        phases = get_phases(e["id"])
+        feed_names = []
+        for p in phases:
+            fn = p.get("feed_name")
+            if fn and fn not in feed_names:
+                feed_names.append(fn)
+        vr_str = ", ".join(feed_names) if feed_names else "—"
+        if phases:
+            temp_parts = []
+            for p in phases:
+                label = p.get("phase_name") or "Phase"
+                temp_parts.append(f"{label}: {p.get('rx1_temp',0):.0f}/{p.get('rx2_temp',0):.0f}/{p.get('rx3_temp',0):.0f}")
+            temp_str = " | ".join(temp_parts)
+        else:
+            temp_str = "—"
         rows.append({
-            "Name": e["exp_name"],
-            "Type": e.get("exp_type") or "—",
-            "Start": e.get("start_date") or "—",
-            "VR Blend": blend_str,
-            "Rx1 °C": e.get("rx1_temp") or "—",
-            "Rx2 °C": e.get("rx2_temp") or "—",
-            "Rx3 °C": e.get("rx3_temp") or "—",
-            "Measurements": get_measurement_count(e["id"]),
+            "No": idx,
+            "Experiment Name": e["exp_name"],
+            "Start Date": e.get("start_date") or "—",
+            "VR Feed": vr_str,
+            "Phases": len(phases),
+            "Temperature (Rx1/Rx2/Rx3)": temp_str,
+            "Records": get_measurement_count(e["id"]),
         })
     st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+

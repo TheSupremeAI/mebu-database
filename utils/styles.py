@@ -264,6 +264,15 @@ hr {
   0%, 100% { box-shadow: 0 0 12px rgba(201,144,26,0.15); }
   50%       { box-shadow: 0 0 28px rgba(201,144,26,0.35); }
 }
+/* ── Multiselect tags — dark background, readable text ────────────────────── */
+span[data-baseweb="tag"] {
+  background-color: rgba(201,144,26,0.2) !important;
+  border: 1px solid rgba(201,144,26,0.35) !important;
+  color: #E8DDD0 !important;
+}
+span[data-baseweb="tag"] span { color: #E8DDD0 !important; }
+span[data-baseweb="tag"] svg { fill: #C9901A !important; }
+
 </style>
 """
 
