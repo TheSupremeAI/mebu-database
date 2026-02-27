@@ -131,10 +131,20 @@ if experiments:
         vr_str = ", ".join(feed_names) if feed_names else "—"
         if phases:
             temp_parts = []
+            all_default = all(p.get("phase_name", "Default") == "Default" for p in phases)
             for p in phases:
-                label = p.get("phase_name") or "Phase"
-                temp_parts.append(f"{label}: {p.get('rx1_temp',0):.0f}/{p.get('rx2_temp',0):.0f}/{p.get('rx3_temp',0):.0f}")
-            temp_str = " | ".join(temp_parts)
+                t = f"{p.get('rx1_temp',0):.0f}/{p.get('rx2_temp',0):.0f}/{p.get('rx3_temp',0):.0f}"
+                if all_default:
+                    temp_parts.append(t)
+                else:
+                    label = p.get("phase_name") or "Phase"
+                    temp_parts.append(f"{label}: {t}")
+            # Deduplicate identical temp strings
+            seen = []
+            for t in temp_parts:
+                if t not in seen:
+                    seen.append(t)
+            temp_str = " | ".join(seen)
         else:
             temp_str = "—"
         rows.append({

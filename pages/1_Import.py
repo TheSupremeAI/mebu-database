@@ -202,13 +202,21 @@ else:
         # Build temperature string from phases
         if phases:
             temp_parts = []
+            all_default = all(p.get("phase_name", "Default") == "Default" for p in phases)
             for p in phases:
-                label = p.get("phase_name") or "Phase"
                 rx1 = p.get("rx1_temp", 0)
                 rx2 = p.get("rx2_temp", 0)
                 rx3 = p.get("rx3_temp", 0)
-                temp_parts.append(f"{label}: {rx1:.0f}/{rx2:.0f}/{rx3:.0f}")
-            temp_str = " | ".join(temp_parts)
+                t = f"{rx1:.0f}/{rx2:.0f}/{rx3:.0f}"
+                if not all_default:
+                    label = p.get("phase_name") or "Phase"
+                    t = f"{label}: {t}"
+                temp_parts.append(t)
+            seen = []
+            for t in temp_parts:
+                if t not in seen:
+                    seen.append(t)
+            temp_str = " | ".join(seen)
         else:
             temp_str = "—"
 
