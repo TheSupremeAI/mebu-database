@@ -25,7 +25,7 @@ Open browser at `http://localhost:8501`
 **Focused Storyteller luxury design**
 
 - **New design identity**: Pure matte black (`#0E1117`) background with sharp `1px` high-contrast gold (`#C9901A`) borders.
-- **Top Summary Ribbons**: Added high-level KPI ribbons using `st.columns` & `st.metric` cards to `Dashboard` and `Product Results` pages for immediate data insights.
+
 - **Redesigned Quick Start**: Consolidated the monolithic gradient block into sleek, functional horizontal metric cards.
 - **Chart refinement**: Stripped out grid lines and made Plotly chart backgrounds completely transparent. Brightened the trace palette with stark, neon colors (Molten Gold, Neon Pink, Cyan) for maximum readability against pure black.
 - **Removed gradient noise**: Cleaned up the background CSS, eliminating the intrusive gold radial gradients for a stricter, professional data-dense look.
