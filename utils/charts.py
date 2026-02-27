@@ -6,18 +6,18 @@ import plotly.graph_objects as go
 
 # ── Palette (mirrors CSS design tokens) ───────────────────────────────────────
 PALETTE = [
-    "#C9901A",  # molten gold      (primary)
-    "#E8E4D9",  # platinum
-    "#D4793A",  # burnt amber
-    "#A87848",  # raw sienna
-    "#7A9AAA",  # steel blue-grey
-    "#C8A878",  # sand
-    "#8A7060",  # dark umber
-    "#E8C860",  # pale gold
+    "#C9901A",  # molten gold
+    "#FFB800",  # bright neon gold
+    "#FF6B6B",  # bright neon pink/red
+    "#7B61FF",  # neon purple
+    "#00D2D3",  # cyan
+    "#FF9F43",  # orange
+    "#C8A2C8",  # lilac
+    "#A8C878",  # lime
 ]
 
-PAPER_BG   = "#06050A"
-PLOT_BG    = "#0C0A12"
+PAPER_BG   = "rgba(0,0,0,0)"
+PLOT_BG    = "rgba(0,0,0,0)"
 GRID_COLOR = "rgba(201,144,26,0.06)"
 ZERO_LINE  = "rgba(201,144,26,0.14)"
 
@@ -37,7 +37,7 @@ BASE_LAYOUT = dict(
         title_font=dict(size=11, color="#A89C8C", family="'Rajdhani', sans-serif"),
         linecolor="rgba(201,144,26,0.1)",
         linewidth=1,
-        showgrid=True,
+        showgrid=False,
     ),
     yaxis=dict(
         gridcolor=GRID_COLOR,
@@ -47,7 +47,7 @@ BASE_LAYOUT = dict(
         title_font=dict(size=11, color="#A89C8C", family="'Rajdhani', sans-serif"),
         linecolor="rgba(201,144,26,0.1)",
         linewidth=1,
-        showgrid=True,
+        showgrid=False,
     ),
     legend=dict(
         bgcolor="rgba(6,5,10,0.88)",
